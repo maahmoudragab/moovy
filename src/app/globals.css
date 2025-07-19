@@ -92,7 +92,7 @@ img{
   --popover: oklch(0.21 0.006 285.885);
   --popover-foreground: oklch(0.985 0 0);
   --primary: #f0b100;
-  --primary-foreground: oklch(0.421 0.095 57.708);
+  --primary-foreground: #fff;
   --secondary: oklch(0.274 0.006 286.033);
   --secondary-foreground: oklch(0.985 0 0);
   --outline: #f0b100;

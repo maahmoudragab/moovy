@@ -3,17 +3,19 @@ import Image from "next/image";
 import useEmblaCarousel from 'embla-carousel-react';
 import Autoplay from 'embla-carousel-autoplay';
 import { useEffect, useState } from "react";
-import { TMDBMovieItem } from "@/data/trending/fetch_trending";
+import { TMDBMovieItem } from "@/data/single_requests/fetch_trending";
+import gsap from 'gsap';
+import { Section } from "lucide-react";
 
 interface HeroSectionProps {
-  trending: TMDBMovieItem[];
+  data: TMDBMovieItem[];
 }
 
-export default function HeroSection({ trending }: HeroSectionProps) {
+export default function HeroSection({ data }: HeroSectionProps) {
   // State to track the current slide index
   const [selectedIndex, setSelectedIndex] = useState(0);
   // Embla carousel with autoplay plugin
-  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true }, [Autoplay({ delay: 5000, stopOnInteraction: false })]);
+  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true }, [Autoplay({ delay: 115000, stopOnInteraction: false })]);
 
   // When slide changes, update selectedIndex
   useEffect(() => {
@@ -27,6 +29,19 @@ export default function HeroSection({ trending }: HeroSectionProps) {
     onSelect();
   }, [emblaApi]);
 
+  // useEffect(() => {
+  //   gsap.fromTo(".gsap-anmi > div,.gsap-anmi > h1,.gsap-anmi > p", {
+  //     alpha: 0,
+  //     y: 50,
+  //   }, {
+  //     y: 0,
+  //     alpha: 1,
+  //     ease: "power2.inOut",
+  //     duration: .5,
+  //     stagger: .5
+  //   })
+  // }, [selectedIndex]);
+
   const genersJSX = (gen: number[]) => {
     return gen.map((g, i) => (
       <h2 key={i} className="flex items-center gap-2"> {g}
@@ -35,17 +50,17 @@ export default function HeroSection({ trending }: HeroSectionProps) {
     ));
   };
 
-  const trendingJSX = trending.map((media, index) => (
+  const trendingJSX = data.map((media, index) => (
     <div key={index} className="min-w-full h-screen relative " dir="rtl" >
       <Image fill priority unoptimized src={media.backdrop_path} alt={media.title_ar || "خلفية"} className="object-cover" />
 
       {/* Gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent z-10" />
+      <div className="absolute w-full h-[500px] bottom-0 bg-gradient-to-t from-[#09090b] to-transparent z-10" />
 
       {/* Details */}
-      <div className="w-full md:w-1/2 absolute bottom-1/5 left-1/2 -translate-x-1/2 text-white z-20 text-center px-5 flex flex-col gap-3">
-        <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-2">{media.title_ar}</h1>
-        <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-2">{media.title_en}</h1>
+      <div className="gsap-anmi w-full md:w-1/2 absolute bottom-1/5 left-1/2 -translate-x-1/2 text-white z-20 text-center px-5 flex flex-col gap-3">
+
+        <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-2">{media.title_ar || media.title_en}</h1>
 
         {/* Overview text */}
         <p className="text-sm md:text-base lg:text-lg">
@@ -66,19 +81,22 @@ export default function HeroSection({ trending }: HeroSectionProps) {
   ))
 
   return (
-    <div className="w-screen min-h-screen" dir="ltr">
-      <div className="overflow-hidden " ref={emblaRef}>
-        <div className="flex">
-          {trendingJSX}
-        </div>
-        {/* Navigation dots */}
-        <div className="absolute bottom-20 w-full flex justify-center gap-2 z-30">
-          {trending.map((_, index) => (
-            <button key={index} onClick={() => emblaApi?.scrollTo(index)}
-              className={`w-3 h-3 rounded-full transition-all duration-300 ${selectedIndex === index ? "bg-primary w-10" : "bg-white/50"}`} />
-          ))}
-        </div>
-      </div>
+<section className="w-screen min-h-screen relative" dir="ltr">
+  <div className="overflow-hidden" ref={emblaRef}>
+    <div className="flex ">
+      {trendingJSX}
     </div>
+  </div>
+
+  {/* ✅ خلي الكرات هنا بعد الـ embla */}
+  <div className="absolute bottom-20 w-full flex justify-center gap-2 z-30">
+    {data.map((_, index) => (
+      <button key={index}
+        onClick={() => emblaApi?.scrollTo(index)}
+        className={`w-3 h-3 rounded-full cursor-pointer transition-all duration-300 ${selectedIndex === index ? "bg-primary w-10" : "bg-primary/40"}`} />
+    ))}
+  </div>
+</section>
+
   );
 }

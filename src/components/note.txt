@@ -1,0 +1,132 @@
+"use client";
+
+import { useState, useRef } from "react";
+import useEmblaCarousel from "embla-carousel-react";
+import Image from "next/image";
+import { PopularMoviesItem } from "@/data/movies/fetch_popular_movies";
+
+interface MoviesSliderProps {
+  title: string;
+  data: PopularMoviesItem[];
+}
+
+export default function SectionSlider({ title, data }: MoviesSliderProps) {
+  const [emblaRef] = useEmblaCarousel({ loop: false, dragFree: true });
+  const [hoveredId, setHoveredId] = useState<number | null>(null);
+  const [showDetailsId, setShowDetailsId] = useState<number | null>(null);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+
+  const handleMouseEnter = (id: number) => {
+    const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
+    if (isMobile) {
+      setHoveredId(id);
+      setShowDetailsId(id);
+    } else {
+      timerRef.current = setTimeout(() => {
+        setHoveredId(id);
+        setShowDetailsId(id);
+      }, 300);
+    }
+  };
+
+  const handleMouseLeave = () => {
+    if (timerRef.current) clearTimeout(timerRef.current);
+    setHoveredId(null);
+    setShowDetailsId(null);
+  };
+
+  return (
+    <section className="px-2 md:px-6">
+      <div className="flex items-center justify-between w-full mb-5 px-2">
+        <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-white">
+          {title}
+        </h2>
+        {title !== "الأعمال القادمة" && (
+          <h3 className="text-sm sm:text-base md:text-lg text-yellow-400 cursor-pointer hover:underline transition">
+            شوف أكتر
+          </h3>
+        )}
+      </div>
+
+      <div className="overflow-hidden" dir="ltr" ref={emblaRef}>
+        <div className="flex gap-4">
+          {data.map((movie) => (
+            <MovieCard
+              title={title}
+              key={movie.id}
+              movie={movie}
+              isHovered={hoveredId === movie.id}
+              isShown={showDetailsId === movie.id}
+              onMouseEnter={handleMouseEnter}
+              onMouseLeave={handleMouseLeave}
+            />
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function MovieCard({
+  title,
+  movie,
+  isHovered,
+  isShown,
+  onMouseEnter,
+  onMouseLeave,
+}: {
+  title: string;
+  movie: PopularMoviesItem;
+  isHovered: boolean;
+  isShown: boolean;
+  onMouseEnter: (id: number) => void;
+  onMouseLeave: () => void;
+}) {
+  const releaseDate = new Date(movie.release_date || "");
+  const now = new Date();
+  const diffDays = Math.floor(
+    (now.getTime() - releaseDate.getTime()) / (1000 * 60 * 60 * 24)
+  );
+  const isNew = diffDays <= 30;
+
+return (
+  <div
+    onMouseEnter={() => onMouseEnter(movie.id)}
+    onMouseLeave={onMouseLeave}
+    className={`
+      relative flex-shrink-0 rounded-md overflow-hidden h-[280px]
+      transition-[width] duration-700 ease-in-out
+      ${isShown
+        ? "w-[280px] sm:w-[360px] md:w-[480px] lg:w-[560px] delay-300 z-10"
+        : "w-[140px] sm:w-[160px] md:w-[180px] lg:w-[200px] delay-0"
+      }
+    `}
+  >
+    {/* Poster */}
+    <div className={`absolute inset-0 transition-transform duration-500 ${isShown ? "-translate-y-full" : "translate-y-0"}`}>
+      <Image
+        src={movie.poster_path}
+        alt={movie.title_ar}
+        fill
+        className="object-cover rounded-md"
+        unoptimized
+      />
+    </div>
+
+    {/* Backdrop */}
+    <div className={`absolute inset-0 transition-transform duration-500 ${isShown ? "translate-y-0" : "translate-y-full"} z-10`}>
+      <Image
+        src={movie.backdrop_path}
+        alt={`${movie.title_ar} خلفية`}
+        fill
+        className="object-cover rounded-md"
+        style={{ boxShadow: "0px -5px 20px 0px rgb(0 0 0 / 40%)" }}
+        unoptimized
+      />
+      <div className="absolute bottom-0 bg-black/70 text-white text-sm px-2 py-2 w-full text-center">
+        {movie.title_ar}
+      </div>
+    </div>
+  </div>
+);
+}

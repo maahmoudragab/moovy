@@ -6,9 +6,9 @@ export async function fetchFromTMDB(endpoint: string, query = "") {
     throw new Error("API_KEY أو BASE_URL مش موجودين في env");
   }
 
-  const url = `${BASE_URL}${endpoint}?api_key=${API_KEY}${query ? `&${query}` : ""}`;
+  const url = `${BASE_URL}${endpoint}?api_key=${API_KEY}${query ? `${query}` : ""}`;
 
-  const res = await fetch(url);
+  const res = await fetch(url, {next: {revalidate: 0}});
 
   if (!res.ok) {
     throw new Error("TMDB fetch failed");
