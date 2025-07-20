@@ -1,4 +1,4 @@
-import HandleRequests, { MediaItem } from "@/data/HandleRequests";
+import HandleRequests from "@/data/HandleRequests";
 
 export default async function FetchTrending() {
   const data = await HandleRequests(

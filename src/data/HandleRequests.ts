@@ -18,7 +18,7 @@ export interface MediaItem {
 export default async function HandleRequests(path: string, query: string, type: "فيلم" | "مسلسل", print?: boolean): Promise<MediaItem[]> {
   try {
     const res = await fetchFromTMDB(path, query);
-    print ? console.log(res.results) : ''
+    if (print) console.log(res.results);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return res.results.slice(0, 20).map((item: any) => ({
       id: item.id,

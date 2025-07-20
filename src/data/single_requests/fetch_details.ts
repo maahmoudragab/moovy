@@ -1,10 +1,23 @@
 import { fetchFromTMDB } from "@/lib/tmdb";
-import { MediaItem } from "@/data/HandleRequests";
+
+export type TMDBDetailsItem = {
+    id: number;
+    title_ar: string;
+    title_en: string;
+    original_language: string;
+    overview: string;
+    genre_ids: number[];
+    backdrop_path: string;
+    poster_path: string;
+    release_date: string;
+    type: "فيلم" | "مسلسل";
+    vote_average: number;
+};
 
 export default async function FetchDetails(
     id: string,
     type: "movie" | "tv"
-): Promise<MediaItem | null> {
+): Promise<TMDBDetailsItem | null> {
     try {
         const res = await fetchFromTMDB(`/${type}/${id}`, "&language=ar");
 

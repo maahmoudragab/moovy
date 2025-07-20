@@ -3,12 +3,10 @@ import Image from "next/image";
 import useEmblaCarousel from 'embla-carousel-react';
 import Autoplay from 'embla-carousel-autoplay';
 import { useEffect, useState } from "react";
-import { TMDBMovieItem } from "@/data/single_requests/fetch_trending";
-import gsap from 'gsap';
-import { Section } from "lucide-react";
+import { MediaItem } from "@/data/HandleRequests";
 
 interface HeroSectionProps {
-  data: TMDBMovieItem[];
+  data: MediaItem[];
 }
 
 export default function HeroSection({ data }: HeroSectionProps) {
