@@ -1,7 +1,7 @@
 // Components
 import Navbar from "@/components/shared/Navbar";
-import HeroSection from "@/components/HeroSection";
-import SectionSlider from "@/components/MainSlider";
+import HeroSection from "@/components/heroSection";
+import SectionSlider from "@/components/mainSlider";
 
 // Single Requests
 import FetchTrending from "@/data/single_requests/fetch_trending";

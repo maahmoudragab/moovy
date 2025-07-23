@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import Navbar from "./shared/Navbar";
-import SectionSlider from "./MainSlider";
+import SectionSlider from "./mainSlider";
 import getLanguageName from "@/data/local_functions/lang";
 import { FullDetailsType } from "@/data/single_requests/fetch_details";
 import { ChevronLeft, ChevronRight, Play } from "lucide-react";
