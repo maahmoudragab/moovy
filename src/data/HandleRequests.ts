@@ -27,7 +27,7 @@ export default async function HandleRequests(path: string, query: string, type: 
       original_language: item.original_language,
       overview: item.overview,
       genre_ids: getGenreNames(item.genre_ids || []),
-      backdrop_path: `https://image.tmdb.org/t/p/w1280${item.backdrop_path || item.poster_path}`,
+      backdrop_path: `https://image.tmdb.org/t/p/original${item.backdrop_path || item.poster_path}`,
       poster_path: `https://image.tmdb.org/t/p/w780${item.poster_path || item.backdrop_path}`,
       release_date: item.release_date || item.first_air_date,
       type,

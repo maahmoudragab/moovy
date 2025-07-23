@@ -8,7 +8,7 @@ export async function fetchFromTMDB(endpoint: string, query = "") {
 
   const url = `${BASE_URL}${endpoint}?api_key=${API_KEY}${query ? `${query}` : ""}`;
 
-  const res = await fetch(url, {next: {revalidate: 0}});
+  const res = await fetch(url, {next: {revalidate: 60}});
 
   if (!res.ok) {
     throw new Error("TMDB fetch failed");

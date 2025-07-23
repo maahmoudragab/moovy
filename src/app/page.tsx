@@ -1,8 +1,7 @@
 // Components
-import Navbar from "@/components/shared/navbar";
-import HeroSection from "@/components/heroSection";
-import SectionSlider from "@/components/sectionSlider";
-import Footer from "@/components/shared/footer";
+import Navbar from "@/components/shared/Navbar";
+import HeroSection from "@/components/HeroSection";
+import SectionSlider from "@/components/MainSlider";
 
 // Single Requests
 import FetchTrending from "@/data/single_requests/fetch_trending";
@@ -21,51 +20,61 @@ import FetchArabicSeries from "@/data/series/fetch_arabic_series";
 import FetchPopularTurkishSeries from "@/data/series/fetch_turkish_series";
 import FetchAnimeSeries from "@/data/series/fetch_anime_series";
 
+
 export default async function Home() {
-  const hero_data = await FetchTrending()
-
-  const popular_movies = await FetchPopularMovies()
-  const arabic_movies = await FetchArabicMovies()
-  const turkish_movies = await FetchPopularTurkishMovies()
-  const anime_movies = await FetchAnimeMovie()
-
-
-  const popular_series = await FetchPopularSeries()
-  const arabic_series = await FetchArabicSeries()
-  const turkish_series = await FetchPopularTurkishSeries()
-  const anime_series = await FetchAnimeSeries()
-
-  const upcoming = await FetchUpcoming()
-  const kdrama = await FetchKdrama()
+  const [hero_data, popular_movies, arabic_movies, turkish_movies, anime_movies,
+    popular_series, arabic_series, turkish_series, anime_series, upcoming, kdrama]
+    = await Promise.all([FetchTrending(), FetchPopularMovies(), FetchArabicMovies(), FetchPopularTurkishMovies(), FetchAnimeMovie(),
+    FetchPopularSeries(), FetchArabicSeries(), FetchPopularTurkishSeries(), FetchAnimeSeries(), FetchUpcoming(), FetchKdrama()]);
 
   return (
-    <main className="flex flex-col gap-5 md:gap-10 pb-20">
+    <main className="flex flex-col gap-5 md:gap-10">
       <Navbar />
-
       <HeroSection data={hero_data} />
+      <div className="mx-4 md:mx-8 flex flex-col gap-3 md:gap-6">
+        <div className="px-2 md:px-4 py-2 md:py-4 bg-[#ffffff1a] border-1 rounded-xl">
+          <SectionSlider title="الأفلام الرائجة" data={popular_movies} />
+        </div>
 
-      <SectionSlider title="الأفلام الرائجة" data={popular_movies} />
+        <div className="px-2 md:px-4 py-2 md:py-4 bg-[#ffffff1a] border-1 rounded-xl">
+          <SectionSlider title="المسلسلات الرائجة" data={popular_series} />
+        </div>
 
-      <SectionSlider title="المسلسلات الرائجة" data={popular_series} />
+        <div className="px-2 md:px-4 py-2 md:py-4 bg-[#ffffff1a] border-1 rounded-xl">
+          <SectionSlider title="افلام عربية" data={arabic_movies} />
+        </div>
 
-      <SectionSlider title="افلام عربية" data={arabic_movies} />
+        <div className="px-2 md:px-4 py-2 md:py-4 bg-[#ffffff1a] border-1 rounded-xl">
+          <SectionSlider title="مسلسلات عربية" data={arabic_series} />
+        </div>
 
-      <SectionSlider title="مسلسلات عربية" data={arabic_series} />
+        <div className="px-2 md:px-4 py-2 md:py-4 bg-[#ffffff1a] border-1 rounded-xl">
+          <SectionSlider title="افلام تركي" data={turkish_movies} />
+        </div>
 
-      <SectionSlider title="افلام تركي" data={turkish_movies} />
+        <div className="px-2 md:px-4 py-2 md:py-4 bg-[#ffffff1a] border-1 rounded-xl">
+          <SectionSlider title="مسلسلات تركي" data={turkish_series} />
+        </div>
 
-      <SectionSlider title="مسلسلات تركي" data={turkish_series} />
+        <div className="px-2 md:px-4 py-2 md:py-4 bg-[#ffffff1a] border-1 rounded-xl">
+          <SectionSlider title="افلام انمي" data={anime_movies} />
+        </div>
 
-      <SectionSlider title="افلام انمي" data={anime_movies} />
+        <div className="px-2 md:px-4 py-2 md:py-4 bg-[#ffffff1a] border-1 rounded-xl">
+          <SectionSlider title="مسلسلات انمي" data={anime_series} />
+        </div>
 
-      <SectionSlider title="مسلسلات انمي" data={anime_series} />
+        <div className="px-2 md:px-4 py-2 md:py-4 bg-[#ffffff1a] border-1 rounded-xl">
+          <SectionSlider title="الكيدراما" data={kdrama} />
+        </div>
 
-      <SectionSlider title="الكيدراما" data={kdrama} />
+        <div className="px-2 md:px-4 py-2 md:py-4 bg-[#ffffff1a] border-1 rounded-xl">
+          <SectionSlider title="الأعمال القادمة" data={upcoming} />
+        </div>
 
-      <SectionSlider title="الأعمال القادمة" data={upcoming} />
-
-      {/* <Footer /> */}
+      </div>
     </main>
-
   );
 }
+
+
