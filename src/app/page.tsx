@@ -1,5 +1,5 @@
 // Components
-import Navbar from "@/components/shared/Navbar";
+import Navbar from "@/components/shared/navbar";
 import HeroSection from "@/components/heroSection";
 import SectionSlider from "@/components/mainSlider";
 

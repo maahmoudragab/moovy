@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { Search, Home, Film, Tv, Clock, Clapperboard } from "lucide-react";
-import { Button } from "../ui/button";
+import { Button } from "@/components/ui/button";
 
 const iconSize = "w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7";
 
