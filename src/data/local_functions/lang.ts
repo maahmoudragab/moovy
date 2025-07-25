@@ -1,19 +1,14 @@
-export default function getLanguageName(lang: string): string {
-  const langs: Record<string, string> = {
-    en: "الإنجليزية",
-    ar: "العربية",
-    fr: "الفرنسية",
-    es: "الإسبانية",
-    de: "الألمانية",
-    it: "الإيطالية",
-    ja: "اليابانية",
-    ko: "الكورية",
-    zh: "الصينية",
-    ru: "الروسية",
-    hi: "الهندية",
-    tr: "التركية",
-    pt: "البرتغالية",
-  };
+const languageMap: Record<string, string> = {
+  en: "الإنجليزية", ar: "العربية", fr: "الفرنسية", es: "الإسبانية",
+  de: "الألمانية", it: "الإيطالية", id: "الإندونيسية", ja: "اليابانية",
+  ko: "الكورية", zh: "الصينية", ru: "الروسية", hi: "الهندية",
+  tr: "التركية", th: "التايلاندية", pt: "البرتغالية", nl: "الهولندية",
+  sv: "السويدية", no: "النرويجية", da: "الدانماركية", fi: "الفنلندية",
+  pl: "البولندية", ro: "الرومانية", el: "اليونانية", he: "العبرية",
+  fa: "الفارسية", ur: "الأردية", vi: "الفيتنامية", uk: "الأوكرانية",
+  cs: "التشيكية", hu: "الهنغارية", bg: "البلغارية",
+};
 
-  return langs[lang] || "غير معروفة";
+export default function getLanguageName(lang: string): string {
+  return languageMap[lang] || lang;
 }

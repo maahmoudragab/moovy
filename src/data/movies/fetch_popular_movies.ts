@@ -2,10 +2,10 @@ import HandleRequest, { MediaItem } from "@/data/HandleRequests";
 
 export type PopularMoviesItem = MediaItem;
 
-export default async function FetchPopularMovies(): Promise<PopularMoviesItem[]> {
+export default async function FetchPopularMovies(page: number = 1): Promise<PopularMoviesItem[]> {
   return await HandleRequest(
     "/trending/movie/week",
-    "&language=ar",
+    `&language=ar&page=${page}`,
     "فيلم"
   );
 }

@@ -17,7 +17,7 @@ export default function HeroSection({ data }: HeroSectionProps) {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [emblaRef, emblaApi] = useEmblaCarousel(
     { loop: true },
-    [Autoplay({ delay: 16610000, stopOnInteraction: false })]
+    [Autoplay({ delay: 5000, stopOnInteraction: false })]
   );
 
   useEffect(() => {
@@ -27,7 +27,7 @@ export default function HeroSection({ data }: HeroSectionProps) {
     onSelect();
   }, [emblaApi]);
 
-  const renderGenres = (genres: number[]) =>
+  const renderGenres = (genres: string[]) =>
     genres.map((g, i) => (
       <h2 key={i} className="flex items-center gap-2">
         {g}
@@ -38,12 +38,20 @@ export default function HeroSection({ data }: HeroSectionProps) {
     ));
 
   return (
-    <section className="w-screen min-h-screen relative" dir="ltr">
+    <section className="w-screen min-h-[80vh] relative" dir="ltr">
       <div className="overflow-hidden" ref={emblaRef}>
         <div className="flex">
           {data.map((media, index) => (
             <div key={index} className="min-w-full h-screen relative" dir="rtl">
-              <Image fill priority unoptimized src={media.backdrop_path} alt={media.title_ar || "خلفية"} className="object-cover" />
+              {/* الصورة الأصلية */}
+              <Image
+                fill
+                priority
+                unoptimized
+                src={`https://image.tmdb.org/t/p/original${media.backdrop_path}`}
+                alt={media.title_ar || media.title_en}
+                className="object-cover"
+              />
 
               {/* Gradient overlay */}
               <div className="absolute w-full h-[500px] bottom-0 bg-gradient-to-t from-[#09090b] to-transparent z-10" />
