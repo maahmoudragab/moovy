@@ -7,8 +7,9 @@ import SearchList from "@/components/shared/searchList";
 import Title from "@/components/ui/title";
 
 
-export default async function SearchPage({ searchParams }: { searchParams: { query?: string } }) {
-  const query = searchParams.query?.trim();
+export default async function SearchPage({ searchParams }: { searchParams: Promise<{ query?: string }> }) {
+  const resolvedSearchParams = await searchParams
+  const query = resolvedSearchParams.query?.trim()
 
   if (!query) return notFound();
 
