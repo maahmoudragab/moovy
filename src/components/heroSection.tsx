@@ -1,18 +1,21 @@
 "use client";
-import Image from "next/image";
+// Material
+// React & Next
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import Image from "next/image";
+
+// External Libs
 import useEmblaCarousel from "embla-carousel-react";
 import Autoplay from "embla-carousel-autoplay";
+import { Heart } from "lucide-react";
+
+// App Code
 import { MediaItem } from "@/data/HandleRequests";
 import { Button } from "@/components/ui/button";
-import { Heart } from "lucide-react";
-import { useRouter } from "next/navigation";
+import Title from "@/components/ui/title";
 
-interface HeroSectionProps {
-  data: MediaItem[];
-}
-
-export default function HeroSection({ data }: HeroSectionProps) {
+export default function HeroSection({ data }: { data: MediaItem[] }) {
   const router = useRouter();
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [emblaRef, emblaApi] = useEmblaCarousel(
@@ -27,13 +30,11 @@ export default function HeroSection({ data }: HeroSectionProps) {
     onSelect();
   }, [emblaApi]);
 
-  const renderGenres = (genres: number[]) =>
+  const renderGenres = (genres: string[] | number[]) =>
     genres.map((g, i) => (
       <h2 key={i} className="flex items-center gap-2">
         {g}
-        {i < genres.length - 1 && (
-          <span className="w-2 h-2 rounded-full bg-white" />
-        )}
+        {i < genres.length - 1 && (<span className="w-2 h-2 rounded-full bg-white" />)}
       </h2>
     ));
 
@@ -43,22 +44,19 @@ export default function HeroSection({ data }: HeroSectionProps) {
         <div className="flex">
           {data.map((media, index) => (
             <div key={index} className="min-w-full h-screen relative" dir="rtl">
-              <Image fill priority unoptimized src={media.backdrop_path} alt={media.title_ar || "خلفية"} className="object-cover" />
+              <Image fill priority unoptimized src={`https://image.tmdb.org/t/p/original${media.backdrop_path}`} alt={media.title_ar || media.title_en} className="object-cover" />
 
               {/* Gradient overlay */}
               <div className="absolute w-full h-[500px] bottom-0 bg-gradient-to-t from-[#09090b] to-transparent z-10" />
 
               <div className="gsap-anmi w-full md:w-1/2 absolute bottom-1/4 md:bottom-1/7 left-1/2 -translate-x-1/2 text-white z-20 text-center px-5 flex flex-col gap-3">
-                <h1 className="text-lg md:text-xl lg:text-2xl font-bold">
-                  {media.title_ar || media.title_en}
-                </h1>
+                <Title text={media.title_ar || media.title_en} />
 
                 {media.overview && (
                   <p className="text-xs md:text-sm lg:text-base text-white/90">
                     {`${media.overview.slice(0, 95)}...`}
                   </p>
                 )}
-
 
                 <div className="flex justify-center flex-wrap items-center gap-2 text-xs md:text-sm text-white/90">
                   {renderGenres(media.genre_ids)}

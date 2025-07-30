@@ -1,8 +1,13 @@
 "use client";
+// React & Next
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+
+// Icons
 import { Search, Home, Film, Tv, Clock, Clapperboard } from "lucide-react";
+
+// App Components
 import { Button } from "@/components/ui/button";
 
 const iconSize = "w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7";
@@ -68,7 +73,7 @@ export default function Navbar() {
       {/* ✅ Desktop Navbar */}
       <header
         onClick={handleClickInside}
-        className="fixed top-3 left-1/2 -translate-x-1/2 z-50 hidden md:flex w-[95%] max-w-7xl h-16 px-6 justify-between items-center rounded-full border-2 backdrop-blur-xl bg-black/20 shadow-md"
+        className="fixed top-3 left-1/2 -translate-x-1/2 z-50 hidden md:flex w-[95%] max-w-7xl h-15 px-6 justify-between items-center rounded-full border-2 backdrop-blur-xl bg-white/10 shadow-md"
       >
         <div className="flex items-center gap-2">
           <Button variant="outline" className="text-sm">
@@ -114,7 +119,7 @@ export default function Navbar() {
       </header>
 
       {/* ✅ Mobile Top Navbar */}
-      <header className="md:hidden fixed  w-full px-2 h-13 bg-black/50 rounded-b-xl flex items-center justify-between z-50">
+      <header className="md:hidden fixed w-full px-2 h-13 bg-gradient-to-b from-black/80 to-transparent rounded-b-xl flex items-center justify-between z-50">
         <Image src="/images/moovy.webp" alt="logo" width={60} height={60} unoptimized onClick={() => router.push(`/`)} />
         <div className="flex gap-2 items-center">
           <Button variant="icon" size="icon" className="text-xs"
@@ -125,7 +130,7 @@ export default function Navbar() {
             }}>
             <Search />
           </Button>
-          <Button variant="default" size="sm" className="text-xs">
+          <Button variant="outline" className="text-xs">
             تسجيل دخول
           </Button>
         </div>
@@ -148,9 +153,11 @@ export default function Navbar() {
       </div>
 
       {/* ✅ Mobile Bottom Navbar */}
-      <ul className="md:hidden fixed bottom-0 left-0 w-full px-2 py-1 backdrop-blur-xl bg-black/20 rounded-t-xl border-t-2 flex items-center justify-around z-50">
-        {renderMobileLinks()}
-      </ul>
+      <div className="md:hidden fixed bottom-3 left-0 w-full px-4 z-50">
+        <ul className="w-full p-2 backdrop-blur-md bg-white/10 rounded-full border-2 flex items-center justify-around">
+          {renderMobileLinks()}
+        </ul>
+      </div>
     </>
   );
 }

@@ -1,3 +1,4 @@
+"use server";
 import HandleRequests, { MediaItem } from "@/data/HandleRequests";
 
 export default async function FetchUpcoming(): Promise<MediaItem[]> {

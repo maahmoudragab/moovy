@@ -1,20 +1,24 @@
 "use client";
-
+// React & Next
 import React, { useState } from "react";
 import Image from "next/image";
-import Navbar from "@/components/shared/navbar";
-import SectionSlider from "@/components/MainSlider";
-import getLanguageName from "@/data/local_functions/lang";
-import { FullDetailsType } from "@/data/single_requests/fetch_details";
+
+// External Libs
 import { ChevronLeft, ChevronRight, Play } from "lucide-react";
 import useEmblaCarousel from "embla-carousel-react";
 
-type Props = {
-  item: FullDetailsType;
-};
+// App Components
+import Navbar from "@/components/shared/navbar";
+import SectionSlider from "@/components/shared/mainSlider";
+import Title from "@/components/ui/title";
 
-export default function DetailsContent({ item }: Props) {
-  const { main, media, more } = item;
+// App Utils & Types
+import getLanguageName from "@/data/local_functions/lang";
+import { FullDetailsType } from "@/data/single_requests/fetch_details";
+
+
+export default function DetailsContent({ item }: { item: FullDetailsType; }) {
+  const { main, media, recommendation } = item;
 
   const [emblaRefCast] = useEmblaCarousel({ loop: false, dragFree: true });
   const [emblaRefImages] = useEmblaCarousel({ loop: false, dragFree: true });
@@ -28,7 +32,6 @@ export default function DetailsContent({ item }: Props) {
     (currentVideoPage - 1) * VIDEOS_PER_PAGE,
     currentVideoPage * VIDEOS_PER_PAGE
   );
-
 
   const InfoRow = ({ label, value }: { label: string; value: string | number | React.ReactNode }) => (
     <li className="flex border-b border-white/10 p-1.5 w-full xl:w-1/2">
@@ -69,30 +72,32 @@ export default function DetailsContent({ item }: Props) {
   return (
     <>
       <Navbar />
-      <main className="relative w-full min-h-[300vh] text-white">
+      <main className="relative w-full">
 
         {/* الخلفية */}
         <div className="absolute inset-0 -z-10">
-          <Image src={main.backdrop || ""} alt={main.name || ""} quality={1} fill priority className="object-cover" />
-          <div className="absolute inset-0 bg-black/80 backdrop-blur-3xl" />
+          <Image src={media.images[0].file_path || main.backdrop_blur_path!} alt={main.name || main.title || 'صورة'} fill sizes="100vw" priority className="object-cover saturate-400" />
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-3xl" />
         </div>
 
         <section className="relative pt-16 md:pt-28 px-2 md:px-6 py-8 flex flex-col gap-6">
           <div className="absolute inset-0 -z-10 min-h-[90vh]"
             style={{
-              backgroundImage: `url(${main.backdrop})`,
+              backgroundImage: `url(${main.backdrop_path})`,
               backgroundPosition: "top center",
               backgroundSize: "cover",
               WebkitMaskImage: "linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 30%, rgba(0,0,0,0.8) 60%, rgba(0,0,0,0) 98%)",
               maskImage: "linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 30%, rgba(0,0,0,0.8) 60%, rgba(0,0,0,0) 98%)",
               WebkitMaskSize: "100% 100%", maskSize: "100% 100%",
-              WebkitMaskRepeat: "no-repeat", maskRepeat: "no-repeat", filter: "brightness(0.5)"
+              WebkitMaskRepeat: "no-repeat", maskRepeat: "no-repeat", filter: "brightness(0.7) saturate(1.3)"
             }} />
 
           {/* التفاصيل */}
           <div className="flex flex-col md:flex-row gap-6 justify-between">
             <div className="w-[220px] md:w-[280px] lg:w-[360px] aspect-[2/3] rounded-xl overflow-hidden border-2 border-white/20 relative shrink-0 mx-auto md:mx-0">
-              <Image src={main.poster || ""} alt={main.name || ""} fill unoptimized priority className="object-cover" />
+              <Image src={main.poster_path!} alt={main.name || main.title || 'صورة'}
+                fill sizes="(max-width: 768px) 220px, (max-width: 1024px) 280px, 360px"
+                unoptimized priority className="object-cover" />
             </div>
 
             <div className="flex flex-col flex-1 gap-4 justify-start">
@@ -140,15 +145,15 @@ export default function DetailsContent({ item }: Props) {
           )}
 
           {/* الكاست */}
-          {media.cast && media.cast.length > 0 && (
+          {media.cast && media.cast.length >= 3 && (
             <section>
               <div className="overflow-hidden" dir="ltr" ref={emblaRefCast}>
                 <div className="flex gap-4">
-                  {media.cast.map((actor, index) => (
+                  {media.cast.filter((a) => a.profile_path).map((actor, index) => (
                     <div key={index} className="flex-shrink-0 bg-white/10 rounded-xl px-2 md:px-4 py-2 md:py-4 w-[140px] sm:w-[160px] flex flex-col items-center text-center gap-2">
                       <div className="relative aspect-square w-full rounded-full overflow-hidden border-2 border-white/50">
                         {actor.profile_path && (
-                          <Image src={actor.profile_path} alt={actor.name} fill unoptimized className="object-cover" />
+                          <Image src={`https://image.tmdb.org/t/p/w500${actor.profile_path}`} alt={actor.name} unoptimized fill sizes="(max-width: 768px) 100vw, 160px" className="object-cover" />
                         )}
                       </div>
                       <h3 className="text-sm font-semibold truncate w-full">{actor.name}</h3>
@@ -161,15 +166,16 @@ export default function DetailsContent({ item }: Props) {
           )}
 
           {/* صور العمل */}
-          {media.images && media.images.length > 0 && (
+          {media.images && media.images.length > 2 && (
             <section className="px-2 md:px-4 py-2 md:py-4 bg-[#ffffff1a] border-1 rounded-xl">
-              <h2 className="text-lg md:text-xl lg:text-2xl font-bold mb-4">صور العمل</h2>
+              <Title text="صور العمل" className="mb-4" />
               <div className="overflow-hidden" dir="ltr" ref={emblaRefImages}>
-                <div className="flex gap-4 min-w-full">
+                <div className="flex  gap-2 md:gap-4 ">
                   {media.images.map((img, index) => (
                     <div
                       key={index}
-                      className=" flex-shrink-0 w-[80%] sm:w-1/2 md:w-1/3 xl:w-1/4 aspect-video rounded-xl overflow-hidden border border-white/20">
+
+                      className="flex-shrink-0 w-[80%] sm:w-1/2 md:w-1/3 xl:w-1/4 aspect-video rounded-xl overflow-hidden border border-white/20">
                       <Image
                         src={img.file_path}
                         alt={`image-${index}`}
@@ -182,8 +188,6 @@ export default function DetailsContent({ item }: Props) {
                   ))}
                 </div>
               </div>
-
-
             </section>
           )}
 
@@ -191,7 +195,7 @@ export default function DetailsContent({ item }: Props) {
           {media.videos && media.videos.length > 0 && (
             <section className="px-2 md:px-4 py-4 bg-[#ffffff1a] border border-white/10 rounded-xl">
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-base md:text-lg font-semibold text-white">فيديوهات</h2>
+                <Title text="فيديوهات العمل" />
                 {/* أزرار التنقل */}
                 {totalVideoPages > 1 && (
                   <div className="flex justify-center items-center gap-2 text-xs text-white/60">
@@ -224,14 +228,11 @@ export default function DetailsContent({ item }: Props) {
               </div>
 
               {/* شبكة الفيديوهات */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4" dir="ltr">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-2 md:gap-4" dir="ltr">
                 {visibleVideos.map((video, index) => {
                   const isPlaying = playedVideo === video.key;
                   return (
-                    <div
-                      key={index}
-                      className="rounded-lg overflow-hidden border border-white/10 bg-white/5"
-                    >
+                    <div key={index} className="rounded-lg overflow-hidden border border-white/10 bg-white/5" >
                       {isPlaying ? (
                         <iframe
                           src={`https://www.youtube.com/embed/${video.key}?autoplay=1`}
@@ -247,9 +248,10 @@ export default function DetailsContent({ item }: Props) {
                           className="relative w-full aspect-video cursor-pointer"
                         >
                           <Image
-                            fill
+                            fill sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 480px"
                             src={`https://img.youtube.com/vi/${video.key}/hqdefault.jpg`}
                             alt={video.name}
+                            unoptimized
                             className="object-cover"
                           />
                           <div className="absolute inset-0 flex items-center justify-center bg-black/40">
@@ -257,8 +259,10 @@ export default function DetailsContent({ item }: Props) {
                           </div>
                         </div>
                       )}
-                      <div className="p-2 text-xs text-white/70 text-center line-clamp-1" dir="ltr">
-                        {video.name}
+
+                      <div className="flex items-center justify-between gap-2 p-2 text-xs text-white/70" dir="ltr">
+                        <p>{video.published_at.split("T")[0]}</p>
+                        <h1 className="truncate max-w-[70%]">{video.type}</h1>
                       </div>
                     </div>
                   );
@@ -270,9 +274,8 @@ export default function DetailsContent({ item }: Props) {
 
           {/* الاقتراحات */}
           <div className="px-2 md:px-4 py-2 md:py-4 bg-[#ffffff1a] border-1 rounded-xl">
-            <SectionSlider title="الأقتراحات" data={more.recommendations} />
+            <SectionSlider title="الأقتراحات" data={recommendation.slice(0, 12)} />
           </div>
-
         </div>
       </main>
     </>

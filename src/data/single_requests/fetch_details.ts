@@ -1,12 +1,12 @@
-// src/data/single_requests/FetchFullDetails.ts
+"use server";
 import { fetchFromTMDB } from "@/lib/tmdb";
-
+import { MediaItem } from "../HandleRequests";
+import getGenreNames from "../local_functions/genres";
+import translateVideoType from "../local_functions/translateVideoType";
 export interface FullDetailsType {
   main: MainDetails;
   media: MediaDetails;
-  more: {
-    recommendations: RecommendationType[];
-  };
+  recommendation: MediaItem[];
 }
 
 type MainDetails = {
@@ -19,8 +19,9 @@ type MainDetails = {
   tagline: string;
   runtime?: number;
   number_of_seasons?: number;
-  backdrop: string | null;
-  poster: string | null;
+  backdrop_path: string | null;
+  backdrop_blur_path: string | null;
+  poster_path: string | null;
   type: "فيلم" | "مسلسل";
   original_language: string;
   vote_average: number;
@@ -38,30 +39,19 @@ type MainDetails = {
 
 type MediaDetails = {
   images: MediaImageType[];
-  posters: MediaImageType[];
-  logos: MediaImageType[];
   videos: VideoType[];
   cast: CastType[];
-  crew: CrewType[];
 };
 
 type MediaImageType = {
   file_path: string;
-  width: number;
-  height: number;
-  aspect_ratio: number;
-  iso_639_1: string | null;
-  vote_average: number;
-  vote_count: number;
 };
 
 type VideoType = {
-  id: string;
   key: string;
   name: string;
-  site: string;
-  type: string;
   published_at: string;
+  type: string
 };
 
 type CastType = {
@@ -71,33 +61,11 @@ type CastType = {
   profile_path: string | null;
 };
 
-type CrewType = {
-  id: number;
-  name: string;
-  job?: string;
-  profile_path: string | null;
-};
-
-export type RecommendationType = {
-  id: number;
-  title_ar: string;
-  title_en: string;
-  original_language: string;
-  overview: string;
-  genre_ids: number[];
-  backdrop_path: string;
-  poster_path: string;
-  release_date?: string;
-  type: "فيلم" | "مسلسل";
-  vote_average: number;
-};
 
 export default async function FetchFullDetails(
   id: string,
   type: "movie" | "tv"
 ): Promise<FullDetailsType | null> {
-  const TMDB_IMAGE_BASE = "https://image.tmdb.org/t/p/w500"; // تقدر تخليها original لو عايز
-
   try {
     const [main, images, videos, credits, recommendations] = await Promise.all([
       fetchFromTMDB(`/${type}/${id}`, "&language=ar"),
@@ -109,68 +77,43 @@ export default async function FetchFullDetails(
 
     const mainDetails: MainDetails = {
       ...main,
-      backdrop: main.backdrop_path
-        ? `https://image.tmdb.org/t/p/original${main.backdrop_path}`
-        : null,
-      poster: main.poster_path
-        ? `https://image.tmdb.org/t/p/w1280${main.poster_path}`
-        : null,
+      backdrop_path: `https://image.tmdb.org/t/p/original${main.backdrop_path}`,
+      backdrop_blur_path: `https://image.tmdb.org/t/p/w92${main.backdrop_path}`,
+      poster_path: `https://image.tmdb.org/t/p/original${main.poster_path}`,
       type: type === "movie" ? "فيلم" : "مسلسل",
     };
 
     const media: MediaDetails = {
       images: (images.backdrops?.slice(0, 10).map((img: MediaImageType) => ({
         ...img,
-        file_path: img.file_path
-          ? `${TMDB_IMAGE_BASE}${img.file_path}`
-          : null,
+        file_path: `https://image.tmdb.org/t/p/w1280${img.file_path}`
       })) as MediaImageType[]) || [],
-
-      posters: (images.posters?.slice(0, 10).map((img: MediaImageType) => ({
-        ...img,
-        file_path: img.file_path
-          ? `${TMDB_IMAGE_BASE}${img.file_path}`
-          : null,
-      })) as MediaImageType[]) || [],
-
-      logos: (images.logos?.slice(0, 3).map((img: MediaImageType) => ({
-        ...img,
-        file_path: img.file_path
-          ? `${TMDB_IMAGE_BASE}${img.file_path}`
-          : null,
-      })) as MediaImageType[]) || [],
-
-      videos: (videos.results as VideoType[]) || [],
-
-      cast: (credits.cast || []).map((actor: CastType): CastType => ({
+      videos: (videos.results || []).slice(0, 10).map((video: VideoType): VideoType => ({
+        ...video,
+        type: translateVideoType(video.type)
+      })), cast: (credits.cast || []).slice(0, 20).map((actor: CastType): CastType => ({
         ...actor,
         profile_path: actor.profile_path
-          ? `${TMDB_IMAGE_BASE}${actor.profile_path}`
-          : null,
-      })),
-
-      crew: (credits.crew as CrewType[]) || [],
-    };
-
-    const more = {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      recommendations: (recommendations.results || []).map((item: any): RecommendationType => ({
-        id: item.id,
-        title_ar: item.title || item.name || "بدون عنوان",
-        title_en: item.original_title || item.original_name || "",
-        original_language: item.original_language,
-        overview: item.overview || "",
-        genre_ids: item.genre_ids || [],
-        backdrop_path: `https://image.tmdb.org/t/p/original${item.backdrop_path}`,
-        poster_path: `https://image.tmdb.org/t/p/w500${item.poster_path}`,
-        release_date: item.release_date || item.first_air_date || "",
-        type: item.media_type === "tv" || item.first_air_date ? "مسلسل" : "فيلم",
-        vote_average: item.vote_average || 0,
       })),
     };
 
-    console.log("تفاصيل العمل:", { main: mainDetails, media, more });
-    return { main: mainDetails, media, more };
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const recommendation: MediaItem[] = (recommendations.results || []).map((item: any): MediaItem => ({
+      id: item.id,
+      title_ar: item.title || item.name || "بدون عنوان",
+      title_en: item.original_title || item.original_name || "",
+      genre_ids: getGenreNames(item.genre_ids) || [],
+      original_language: item.original_language,
+      overview: item.overview,
+      backdrop_path: item.backdrop_path || item.poster_path,
+      poster_path: item.poster_path,
+      release_date: item.release_date || item.first_air_date || "",
+      type: item.media_type === "tv" || item.first_air_date ? "مسلسل" : "فيلم",
+      vote_average: item.vote_average || 0,
+    }));
+
+    console.log("تفاصيل العمل:", { main: mainDetails, media, recommendation });
+    return { main: mainDetails, media, recommendation };
 
   } catch (err) {
     console.error("❌ فشل في جلب التفاصيل:", err);

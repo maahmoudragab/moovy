@@ -1,5 +1,8 @@
+// Next Types & Fonts
 import type { Metadata } from "next";
 import { Alexandria } from "next/font/google";
+
+// Global Styles
 import "./globals.css";
 
 
