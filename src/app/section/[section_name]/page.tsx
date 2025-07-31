@@ -34,7 +34,7 @@ export default async function SectionPage({ params }: { params: Promise<{ sectio
       <Navbar />
       <main className="pt-16 md:pt-24 mx-4 md:mx-8 flex flex-col gap-3 md:gap-6">
         <div className="px-2 md:px-4 py-2 md:py-4 bg-[#ffffff1a] border-1 rounded-xl">
-          <Title text={sectionTitles[section_name]} className="mb-4" />
+          <Title className="mb-4">{sectionTitles[section_name]}</Title>
           <SectionList section={section_name} />
         </div>
       </main>
