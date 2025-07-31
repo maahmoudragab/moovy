@@ -1,5 +1,5 @@
-export default function Title({ text, className }: { text: string, className?: string; }) {
+export default function Title({ children, className }: { children: string, className?: string; }) {
   return (
-    <h2 className={`text-lg md:text-xl lg:text-2xl font-bold ${className}`}>{text}</h2>
+    <h2 className={`text-lg md:text-xl lg:text-2xl font-bold ${className}`}>{children}</h2>
   );
 }

@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 
 // Icons
-import { Search, Home, Film, Tv, Clock, Clapperboard } from "lucide-react";
+import { Search, Home, Film, Tv, Clock } from "lucide-react";
 
 // App Components
 import { Button } from "@/components/ui/button";
@@ -14,10 +14,9 @@ const iconSize = "w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7";
 
 const navLinks = [
   { label: "الرئيسية", icon: Home, path: "/" },
-  { label: "الأحدث", icon: Clock, path: "/latest" },
-  { label: "الأفلام", icon: Film, path: "/movies" },
-  { label: "المسلسلات", icon: Tv, path: "/tv" },
-  { label: "البرامج", icon: Clapperboard, path: "/shows" },
+  { label: "الأحدث", icon: Clock, path: "/section/latest" },
+  { label: "الأفلام", icon: Film, path: "/section/popular_movies" },
+  { label: "المسلسلات", icon: Tv, path: "/section/popular_series" },
 ];
 
 export default function Navbar() {

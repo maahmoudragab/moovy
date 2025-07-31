@@ -1,6 +1,6 @@
 "use server";
 import { fetchFromTMDB } from "@/lib/tmdb";
-import getGenreNames from "./local_functions/genres";
+import getGenreNames from "@/data/local_functions/genres";
 
 export interface MediaItem {
   id: number;

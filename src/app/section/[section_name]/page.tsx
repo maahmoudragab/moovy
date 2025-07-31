@@ -8,7 +8,8 @@ import Title from "@/components/ui/title";
 
 const validTypes = [
   "kr_movies", "popular_movies", "arabic_movies", "turkish_movies", "anime_movies",
-  "kr_series", "popular_series", "arabic_series", "turkish_series", "anime_series"
+  "kr_series", "popular_series", "arabic_series", "turkish_series", "anime_series",
+  "latest"
 ];
 const sectionTitles: Record<string, string> = {
   popular_movies: "الأفلام الرائجة",

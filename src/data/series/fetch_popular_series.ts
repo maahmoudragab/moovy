@@ -1,5 +1,5 @@
 "use server";
-import HandleRequests, { MediaItem } from "../HandleRequests";
+import HandleRequests, { MediaItem } from "@/data/HandleRequests";
 
 export type PopularSeriesItem = MediaItem;
 

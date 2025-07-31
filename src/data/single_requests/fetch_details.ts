@@ -1,12 +1,14 @@
 "use server";
 import { fetchFromTMDB } from "@/lib/tmdb";
-import { MediaItem } from "../HandleRequests";
-import getGenreNames from "../local_functions/genres";
-import translateVideoType from "../local_functions/translateVideoType";
+import { MediaItem } from "@/data/HandleRequests";
+import getGenreNames from "@/data/local_functions/genres";
+import translateVideoType from "@/data/local_functions/translateVideoType";
+
 export interface FullDetailsType {
   main: MainDetails;
   media: MediaDetails;
   recommendation: MediaItem[];
+  reviews: ReviewType[];
 }
 
 type MainDetails = {
@@ -19,6 +21,9 @@ type MainDetails = {
   tagline: string;
   runtime?: number;
   number_of_seasons?: number;
+  belongs_to_collection?: {
+    name: string
+  };
   backdrop_path: string | null;
   backdrop_blur_path: string | null;
   poster_path: string | null;
@@ -29,6 +34,7 @@ type MainDetails = {
   first_air_date?: string;
   seasons?: Array<{
     id: number;
+    name: string;
     season_number: number;
     overview?: string;
     air_date?: string;
@@ -61,18 +67,31 @@ type CastType = {
   profile_path: string | null;
 };
 
+type ReviewType = {
+  author: string;
+  content: string;
+  created_at: string;
+  created_at_formatted?: string;
+  author_details: {
+    name?: string;
+    username?: string;
+    avatar_path?: string;
+    rating?: number;
+  };
+};
 
 export default async function FetchFullDetails(
   id: string,
   type: "movie" | "tv"
 ): Promise<FullDetailsType | null> {
   try {
-    const [main, images, videos, credits, recommendations] = await Promise.all([
+    const [main, images, videos, credits, recommendations, reviews] = await Promise.all([
       fetchFromTMDB(`/${type}/${id}`, "&language=ar"),
       fetchFromTMDB(`/${type}/${id}/images`, ""),
       fetchFromTMDB(`/${type}/${id}/videos`, ""),
       fetchFromTMDB(`/${type}/${id}/credits`, ""),
       fetchFromTMDB(`/${type}/${id}/recommendations`, "&language=ar"),
+      fetchFromTMDB(`/${type}/${id}/reviews`),
     ]);
 
     const mainDetails: MainDetails = {
@@ -112,8 +131,33 @@ export default async function FetchFullDetails(
       vote_average: item.vote_average || 0,
     }));
 
-    console.log("تفاصيل العمل:", { main: mainDetails, media, recommendation });
-    return { main: mainDetails, media, recommendation };
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const reviewList: ReviewType[] = (reviews.results || []).map((review: any): ReviewType => {
+      const avatar = review.author_details?.avatar_path;
+
+      const fixedAvatar = avatar
+        ? avatar.startsWith("/https")
+          ? avatar.substring(1)
+          : `https://image.tmdb.org/t/p/w200${avatar}`
+        : "/images/avatars/user.png";
+
+      return {
+        author: review.author,
+        content: review.content,
+        created_at: review.created_at,
+        created_at_formatted: review.created_at.split("T")[0],
+        author_details: {
+          name: review.author_details?.name || "",
+          username: review.author_details?.username || "",
+          avatar_path: fixedAvatar,
+          rating: review.author_details?.rating ?? null,
+        },
+      };
+    });
+
+    console.log("تفاصيل العمل:", mainDetails);
+    return { main: mainDetails, media, recommendation, reviews: reviewList };
 
   } catch (err) {
     console.error("❌ فشل في جلب التفاصيل:", err);

@@ -1,37 +1,61 @@
 "use client";
 // React & Next
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 
 // External Libs
-import { ChevronLeft, ChevronRight, Play } from "lucide-react";
+import { ChevronLeft, Play } from "lucide-react";
 import useEmblaCarousel from "embla-carousel-react";
 
 // App Components
 import Navbar from "@/components/shared/navbar";
 import SectionSlider from "@/components/shared/mainSlider";
-import Title from "@/components/ui/title";
 
 // App Utils & Types
 import getLanguageName from "@/data/local_functions/lang";
 import { FullDetailsType } from "@/data/single_requests/fetch_details";
-
+import PaginatedSection from "@/components/shared/paginatedSection";
 
 export default function DetailsContent({ item }: { item: FullDetailsType; }) {
-  const { main, media, recommendation } = item;
+  const [isMobile, setIsMobile] = useState(false)
 
-  const [emblaRefCast] = useEmblaCarousel({ loop: false, dragFree: true });
-  const [emblaRefImages] = useEmblaCarousel({ loop: false, dragFree: true });
+  useEffect(() => {
+    setIsMobile(window.innerWidth <= 768);
+  }, [])
+
+  const { main, media, recommendation, reviews } = item;
+
+  const [emblaRefCast] = useEmblaCarousel({ loop: false, dragFree: true, direction: 'rtl' });
+
   const [playedVideo, setPlayedVideo] = useState<string | null>(null);
+
+  // Pagination for images
+  const imagesPerPage = 4;
+  const [currentImagePage, setCurrentImagePage] = useState(1);
+  const totalImagePages = Math.ceil(media.images.length / imagesPerPage);
+
+  const visibleImages = media.images.slice(
+    (currentImagePage - 1) * imagesPerPage,
+    currentImagePage * imagesPerPage
+  );
 
   // Pagination for videos
   const [currentVideoPage, setCurrentVideoPage] = useState(1);
-  const VIDEOS_PER_PAGE = 4;
+  const VIDEOS_PER_PAGE = isMobile ? 2 : 4;
   const totalVideoPages = Math.ceil(media.videos.length / VIDEOS_PER_PAGE);
   const visibleVideos = media.videos.slice(
     (currentVideoPage - 1) * VIDEOS_PER_PAGE,
     currentVideoPage * VIDEOS_PER_PAGE
   );
+
+  // Pagination for reviews
+  const [currentReviewPage, setCurrentReviewPage] = useState(1);
+  const reviewsPerPage = isMobile ? 2 : 4;
+  const totalReviewPages = Math.ceil(reviews.length / reviewsPerPage);
+  const startIndex = (currentReviewPage - 1) * reviewsPerPage;
+  const endIndex = startIndex + reviewsPerPage;
+  const visibleReviews = reviews.slice(startIndex, endIndex);
 
   const InfoRow = ({ label, value }: { label: string; value: string | number | React.ReactNode }) => (
     <li className="flex border-b border-white/10 p-1.5 w-full xl:w-1/2">
@@ -49,6 +73,7 @@ export default function DetailsContent({ item }: { item: FullDetailsType; }) {
         <InfoRow label="التقييم" value={main.vote_average} />
         {main.runtime && <InfoRow label="المدة" value={`${main.runtime} دقيقة`} />}
         {main.number_of_seasons && <InfoRow label="عدد المواسم" value={main.number_of_seasons} />}
+        {main.belongs_to_collection && <InfoRow label="يتبع الى" value={main.belongs_to_collection?.name || "تسسسست"} />}
         <InfoRow label="تاريخ الإصدار" value={main.type === "فيلم" ? main.release_date : main.first_air_date} />
         {Array.isArray(main.genres) && main.genres.length > 0 && (
           <InfoRow
@@ -76,12 +101,22 @@ export default function DetailsContent({ item }: { item: FullDetailsType; }) {
 
         {/* الخلفية */}
         <div className="absolute inset-0 -z-10">
-          <Image src={media.images[0].file_path || main.backdrop_blur_path!} alt={main.name || main.title || 'صورة'} fill sizes="100vw" priority className="object-cover saturate-400" />
+          {(media.images?.[0]?.file_path || main.backdrop_blur_path) && (
+            <Image
+              src={`https://image.tmdb.org/t/p/w500${media.images?.[0]?.file_path || main.backdrop_blur_path}`}
+              alt={main.name || main.title || "صورة"}
+              fill
+              sizes="100vw"
+              priority
+              className="object-cover saturate-400"
+            />
+          )}
           <div className="absolute inset-0 bg-black/60 backdrop-blur-3xl" />
         </div>
 
-        <section className="relative pt-16 md:pt-28 px-2 md:px-6 py-8 flex flex-col gap-6">
-          <div className="absolute inset-0 -z-10 min-h-[90vh]"
+        {/* التفاصيل */}
+        <section className="relative pt-16 md:pt-28 px-4 md:px-8 py-8 flex flex-col gap-6">
+          <div className="absolute inset-0 -z-10"
             style={{
               backgroundImage: `url(${main.backdrop_path})`,
               backgroundPosition: "top center",
@@ -92,7 +127,6 @@ export default function DetailsContent({ item }: { item: FullDetailsType; }) {
               WebkitMaskRepeat: "no-repeat", maskRepeat: "no-repeat", filter: "brightness(0.7) saturate(1.3)"
             }} />
 
-          {/* التفاصيل */}
           <div className="flex flex-col md:flex-row gap-6 justify-between">
             <div className="w-[220px] md:w-[280px] lg:w-[360px] aspect-[2/3] rounded-xl overflow-hidden border-2 border-white/20 relative shrink-0 mx-auto md:mx-0">
               <Image src={main.poster_path!} alt={main.name || main.title || 'صورة'}
@@ -102,12 +136,12 @@ export default function DetailsContent({ item }: { item: FullDetailsType; }) {
 
             <div className="flex flex-col flex-1 gap-4 justify-start">
               <h1 className="text-2xl md:text-4xl lg:text-5xl font-bold">
-                <span>{main.title || main.name}</span>
-                &nbsp;|&nbsp;
-                <span dir="ltr">{main.original_title || main.original_name}</span>
+                {(main.title || main.name) === (main.original_title || main.original_name)
+                  ? (main.title || main.name || main.original_title || main.original_name)
+                  : `${main.title || main.name} | ${main.original_title || main.original_name}`}
               </h1>
 
-              <p className="text-sm md:text-base text-white/90 leading-relaxed w-full xl:w-1/2" dir="rtl">
+              <p className="text-sm md:text-base text-white/90 leading-relaxed w-full xl:w-1/2 text-justify" dir="rtl">
                 {main.overview || "لا يوجد وصف متاح لهذا العمل."}
               </p>
 
@@ -116,16 +150,16 @@ export default function DetailsContent({ item }: { item: FullDetailsType; }) {
               </div>
             </div>
           </div>
+
         </section>
 
-        <div className="mx-4 md:mx-8 flex flex-col gap-3 md:gap-6">
-
+        <div className="mx-4 md:mx-8 flex flex-col gap-3 md:gap-5">
           {/* المواسم */}
           {main.seasons && main.seasons.length > 0 && (
-            <section>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <section >
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 md:gap-3">
                 {main.seasons.map((season) => (
-                  <div key={season.id} className="bg-white/10 rounded-xl px-2 md:px-4 py-2 md:py-4 flex flex-col gap-2 min-h-[180px]">
+                  <div key={season.id} className="border border-white/10 bg-white/5 rounded-xl px-2 md:px-4 py-2 md:py-4 flex flex-col gap-2 ">
                     <h3 className="text-lg font-semibold">
                       {season.season_number === 0 ? "العروض الخاصة" : `الموسم ${season.season_number}`}
                     </h3>
@@ -145,137 +179,148 @@ export default function DetailsContent({ item }: { item: FullDetailsType; }) {
           )}
 
           {/* الكاست */}
-          {media.cast && media.cast.length >= 3 && (
-            <section>
-              <div className="overflow-hidden" dir="ltr" ref={emblaRefCast}>
-                <div className="flex gap-4">
-                  {media.cast.filter((a) => a.profile_path).map((actor, index) => (
-                    <div key={index} className="flex-shrink-0 bg-white/10 rounded-xl px-2 md:px-4 py-2 md:py-4 w-[140px] sm:w-[160px] flex flex-col items-center text-center gap-2">
-                      <div className="relative aspect-square w-full rounded-full overflow-hidden border-2 border-white/50">
+          {media.cast && media.cast.length >= 2 && (
+            <section className="overflow-hidden" ref={emblaRefCast}>
+              <div className="flex gap-2 md:gap-3">
+                {media.cast
+                  .filter((a) => a.profile_path)
+                  .map((actor) => (
+                    <Link
+                      key={actor.id}
+                      href={`/artist/${actor.id}`}
+                      className="relative border border-white/10 bg-white/5 flex-shrink-0  rounded-xl px-3 md:px-5 py-3 md:py-5 w-[140px] sm:w-[160px] flex flex-col items-center text-center gap-2 transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/50"
+                    >
+                      <div className="relative aspect-square w-full rounded-full overflow-hidden border-2 border-white/20  transition-colors duration-300">
                         {actor.profile_path && (
-                          <Image src={`https://image.tmdb.org/t/p/w500${actor.profile_path}`} alt={actor.name} unoptimized fill sizes="(max-width: 768px) 100vw, 160px" className="object-cover" />
+                          <Image
+                            src={`https://image.tmdb.org/t/p/w500${actor.profile_path}`}
+                            alt={actor.name}
+                            unoptimized
+                            fill
+                            sizes="(max-width: 768px) 100vw, 160px"
+                            className="object-cover"
+                          />
                         )}
                       </div>
-                      <h3 className="text-sm font-semibold truncate w-full">{actor.name}</h3>
-                      {actor.character && <p className="text-xs text-white/70 truncate w-full">{actor.character}</p>}
-                    </div>
+
+                      <h3 className="text-sm font-semibold text-white truncate px-4 text-center">
+                        {actor.name}
+                      </h3>
+                      <div className="w-full flex items-center ">
+                        {actor.character && <p className="text-xs text-white/70 truncate w-full">{actor.character}</p>}
+                        <ChevronLeft className="h-4 w-4 text-primary" />
+                      </div>
+                    </Link>
                   ))}
-                </div>
               </div>
             </section>
           )}
 
           {/* صور العمل */}
           {media.images && media.images.length > 2 && (
-            <section className="px-2 md:px-4 py-2 md:py-4 bg-[#ffffff1a] border-1 rounded-xl">
-              <Title text="صور العمل" className="mb-4" />
-              <div className="overflow-hidden" dir="ltr" ref={emblaRefImages}>
-                <div className="flex  gap-2 md:gap-4 ">
-                  {media.images.map((img, index) => (
-                    <div
-                      key={index}
-
-                      className="flex-shrink-0 w-[80%] sm:w-1/2 md:w-1/3 xl:w-1/4 aspect-video rounded-xl overflow-hidden border border-white/20">
-                      <Image
-                        src={img.file_path}
-                        alt={`image-${index}`}
-                        width={300}
-                        height={200}
-                        className="object-cover w-full h-full"
-                        unoptimized
-                      />
-                    </div>
-                  ))}
+            <PaginatedSection
+              title="صور العمل"
+              totalPages={totalImagePages}
+              currentPage={currentImagePage}
+              setCurrentPage={setCurrentImagePage}
+            >
+              {visibleImages.map((img, index) => (
+                <div
+                  key={index}
+                  className="rounded-lg overflow-hidden border border-white/10 bg-white/5"            >
+                  <Image
+                    src={img.file_path}
+                    alt={`image-${index}`}
+                    width={0}
+                    height={0}
+                    className="object-cover w-full "
+                    unoptimized
+                  />
                 </div>
-              </div>
-            </section>
+              ))}
+            </PaginatedSection>
           )}
 
-          {/* فيديوهات بباجنيشن */}
-          {media.videos && media.videos.length > 0 && (
-            <section className="px-2 md:px-4 py-4 bg-[#ffffff1a] border border-white/10 rounded-xl">
-              <div className="flex items-center justify-between mb-4">
-                <Title text="فيديوهات العمل" />
-                {/* أزرار التنقل */}
-                {totalVideoPages > 1 && (
-                  <div className="flex justify-center items-center gap-2 text-xs text-white/60">
-                    {/* السابق */}
-                    <button
-                      onClick={() => setCurrentVideoPage((p) => Math.max(p - 1, 1))}
-                      disabled={currentVideoPage === 1}
-                      className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-white/10 transition cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
-                      aria-label="السابق"
-                    >
-                      <ChevronRight className="w-4 h-4" />
-                    </button>
-
-                    {/* رقم الصفحة */}
-                    <span className="select-none tracking-wide text-white/80">
-                      {currentVideoPage} من {totalVideoPages}
-                    </span>
-
-                    {/* التالي */}
-                    <button
-                      onClick={() => setCurrentVideoPage((p) => Math.min(p + 1, totalVideoPages))}
-                      disabled={currentVideoPage === totalVideoPages}
-                      className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-white/10 transition cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
-                      aria-label="التالي"
-                    >
-                      <ChevronLeft className="w-4 h-4" />
-                    </button>
-                  </div>
-                )}
-              </div>
-
-              {/* شبكة الفيديوهات */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-2 md:gap-4" dir="ltr">
-                {visibleVideos.map((video, index) => {
-                  const isPlaying = playedVideo === video.key;
-                  return (
-                    <div key={index} className="rounded-lg overflow-hidden border border-white/10 bg-white/5" >
-                      {isPlaying ? (
-                        <iframe
-                          src={`https://www.youtube.com/embed/${video.key}?autoplay=1`}
-                          title={video.name}
-                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                          allowFullScreen
-                          sandbox="allow-same-origin allow-scripts allow-presentation allow-popups allow-popups-to-escape-sandbox"
-                          className="w-full aspect-video"
+          {/* الفيديوهات */}
+          {media.videos?.length > 0 && (
+            <PaginatedSection
+              title="فيديوهات العمل"
+              totalPages={totalVideoPages}
+              currentPage={currentVideoPage}
+              setCurrentPage={setCurrentVideoPage}
+            >
+              {visibleVideos.map((video, index) => {
+                const isPlaying = playedVideo === video.key;
+                return (
+                  <div key={index} className="rounded-lg overflow-hidden border border-white/10 bg-white/5">
+                    {isPlaying ? (
+                      <iframe
+                        src={`https://www.youtube.com/embed/${video.key}?autoplay=1`}
+                        title={video.name}
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                        sandbox="allow-same-origin allow-scripts allow-presentation allow-popups allow-popups-to-escape-sandbox"
+                        className="w-full aspect-video"
+                      />
+                    ) : (
+                      <div
+                        onClick={() => setPlayedVideo(video.key)}
+                        className="relative w-full aspect-video cursor-pointer"
+                      >
+                        <Image
+                          fill
+                          src={`https://img.youtube.com/vi/${video.key}/hqdefault.jpg`}
+                          alt={video.name}
+                          unoptimized
+                          className="object-cover"
                         />
-                      ) : (
-                        <div
-                          onClick={() => setPlayedVideo(video.key)}
-                          className="relative w-full aspect-video cursor-pointer"
-                        >
-                          <Image
-                            fill sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 480px"
-                            src={`https://img.youtube.com/vi/${video.key}/hqdefault.jpg`}
-                            alt={video.name}
-                            unoptimized
-                            className="object-cover"
-                          />
-                          <div className="absolute inset-0 flex items-center justify-center bg-black/40">
-                            <Play className="w-8 h-8 text-white" />
-                          </div>
+                        <div className="absolute inset-0 flex items-center justify-center bg-black/40">
+                          <Play className="w-8 h-8 text-white" />
                         </div>
-                      )}
-
-                      <div className="flex items-center justify-between gap-2 p-2 text-xs text-white/70" dir="ltr">
-                        <p>{video.published_at.split("T")[0]}</p>
-                        <h1 className="truncate max-w-[70%]">{video.type}</h1>
                       </div>
-                    </div>
-                  );
-                })}
-              </div>
+                    )}
 
-            </section>
+                    <div className="flex items-center justify-between gap-2 p-2 text-xs text-white/70" dir="ltr">
+                      <p>{video.published_at.split("T")[0]}</p>
+                      <h1 className="truncate max-w-[70%]">{video.type}</h1>
+                    </div>
+                  </div>
+                );
+              })}
+            </PaginatedSection>
+          )}
+
+          {/* ريفيوهات المشاهدين */}
+          {reviews.length > 0 && (
+            <PaginatedSection
+              title="ريفيوهات المشاهدين"
+              totalPages={totalReviewPages}
+              currentPage={currentReviewPage}
+              setCurrentPage={setCurrentReviewPage}
+            >
+              {visibleReviews.map((review, index) => (
+                <div key={index} className="rounded-lg overflow-hidden lg:border-l-4 border border-white/10 bg-white/5 p-4 space-y-2 text-white">
+                  <div className="flex items-center gap-3">
+                    {review.author_details.avatar_path && (
+                      <Image src={review.author_details.avatar_path} alt={review.author} unoptimized
+                        width={50} height={50} className="rounded-full w-10 h-10 object-cover" />)}
+                    <div>
+                      <p className="text-white/90 font-bold">{review.author}</p>
+                      <p className="text-sm text-white/80">{review.created_at_formatted}</p>
+                    </div>
+                  </div>
+                  <p className="text-sm text-white/80 line-clamp-3">{review.content}</p>
+                </div>
+              ))}
+            </PaginatedSection>
           )}
 
           {/* الاقتراحات */}
-          <div className="px-2 md:px-4 py-2 md:py-4 bg-[#ffffff1a] border-1 rounded-xl">
-            <SectionSlider title="الأقتراحات" data={recommendation.slice(0, 12)} />
-          </div>
+          {recommendation.length > 2 && (
+            <div className="px-2 md:px-4 py-2 md:py-4 bg-[#ffffff1a] border-1 rounded-xl">
+              <SectionSlider title="الأقتراحات" data={recommendation.slice(0, 12)} />
+            </div>
+          )}
         </div>
       </main>
     </>

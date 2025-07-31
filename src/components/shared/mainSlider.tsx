@@ -20,13 +20,13 @@ interface MoviesSliderProps {
 }
 
 export default function SectionSlider({ title, data, path }: MoviesSliderProps) {
-  const [emblaRef] = useEmblaCarousel({ loop: false, dragFree: true });
+  const [emblaRef] = useEmblaCarousel({ loop: false, dragFree: true, direction: 'rtl' });
   const router = useRouter();
 
   return (
     <section>
       <div className="flex justify-between items-center mb-4">
-        <Title text={title} />
+        <Title>{title}</Title>
         {title !== "الأعمال القادمة" && title !== "الأقتراحات" && (
           <h3 className="text-primary hover:underline cursor-pointer text-xs md:text-sm"
             onClick={() => router.push(`/section/${path}`)}
@@ -34,8 +34,8 @@ export default function SectionSlider({ title, data, path }: MoviesSliderProps) 
         )}
       </div>
 
-      <div className="overflow-hidden" dir="ltr" ref={emblaRef}>
-        <div className="flex gap-2 md:gap-4">
+      <div className="overflow-hidden"  ref={emblaRef}>
+        <div className="flex gap-2 md:gap-3">
           {data.filter((i) => i.poster_path).map((item, i) => {
             return (<MediaCard key={i} item={item} title={title}></MediaCard>)
           })}

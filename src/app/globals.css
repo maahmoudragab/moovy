@@ -128,10 +128,9 @@ img{
     @apply bg-background text-foreground;
   }
 }
-.textWrapper {
-  @apply relative w-fit min-w-12 text-2xl font-bold tracking-wider text-white;
-}
 
+
+/* Loading Page Animation */
 .invertbox {
   position: absolute;
   top: 0;

@@ -15,6 +15,8 @@ import FetchPopularTurkishSeries from "@/data/series/fetch_turkish_series";
 import FetchAnimeSeries from "@/data/series/fetch_anime_series";
 import FetchKrSeries from "@/data/series/fetch_kr_series";
 
+import FetchLatest from "@/data/single_requests/fetch_latest";
+
 const fetchMap: Record<string, (page: number) => Promise<unknown>> = {
   'kr_movies': FetchKrMovies,
   'popular_movies': FetchPopularMovies,
@@ -26,6 +28,7 @@ const fetchMap: Record<string, (page: number) => Promise<unknown>> = {
   'arabic_series': FetchArabicSeries,
   'turkish_series': FetchPopularTurkishSeries,
   'anime_series': FetchAnimeSeries,
+  'latest': FetchLatest,
 };
 
 export async function GET(req: NextRequest) {

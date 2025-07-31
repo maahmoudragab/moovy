@@ -19,7 +19,7 @@ export default function HeroSection({ data }: { data: MediaItem[] }) {
   const router = useRouter();
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [emblaRef, emblaApi] = useEmblaCarousel(
-    { loop: true },
+    { loop: true, direction: 'rtl' },
     [Autoplay({ delay: 16610000, stopOnInteraction: false })]
   );
 
@@ -39,7 +39,7 @@ export default function HeroSection({ data }: { data: MediaItem[] }) {
     ));
 
   return (
-    <section className="w-screen min-h-screen relative" dir="ltr">
+    <section className="w-screen min-h-screen relative">
       <div className="overflow-hidden" ref={emblaRef}>
         <div className="flex">
           {data.map((media, index) => (
@@ -50,7 +50,7 @@ export default function HeroSection({ data }: { data: MediaItem[] }) {
               <div className="absolute w-full h-[500px] bottom-0 bg-gradient-to-t from-[#09090b] to-transparent z-10" />
 
               <div className="gsap-anmi w-full md:w-1/2 absolute bottom-1/4 md:bottom-1/7 left-1/2 -translate-x-1/2 text-white z-20 text-center px-5 flex flex-col gap-3">
-                <Title text={media.title_ar || media.title_en} />
+                <Title>{media.title_ar || media.title_en}</Title>
 
                 {media.overview && (
                   <p className="text-xs md:text-sm lg:text-base text-white/90">
