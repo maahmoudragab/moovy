@@ -1,42 +1,51 @@
 "use client";
-// Material
-// React & Next
+
+// ✅ استيراد الأساسيات
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 
-// External Libs
+// ✅ المكتبات الخارجية
 import useEmblaCarousel from "embla-carousel-react";
 import Autoplay from "embla-carousel-autoplay";
-import { Heart } from "lucide-react";
 
-// App Code
+// ✅ مكونات المشروع
 import { MediaItem } from "@/data/HandleRequests";
 import { Button } from "@/components/ui/button";
 import Title from "@/components/ui/title";
 
 export default function HeroSection({ data }: { data: MediaItem[] }) {
-  const router = useRouter();
   const [selectedIndex, setSelectedIndex] = useState(0);
+
   const [emblaRef, emblaApi] = useEmblaCarousel(
-    { loop: true, direction: 'rtl' },
+    { loop: true, direction: "rtl" },
     [Autoplay({ delay: 16610000, stopOnInteraction: false })]
   );
 
+  const router = useRouter();
+
+  // ✅ لما يتغير السلايدر
   useEffect(() => {
     if (!emblaApi) return;
+
     const onSelect = () => setSelectedIndex(emblaApi.selectedScrollSnap());
+
     emblaApi.on("select", onSelect);
-    onSelect();
+    onSelect(); // أول اختيار
   }, [emblaApi]);
 
+
+  // ✅ عرض التصنيفات مع الفواصل
   const renderGenres = (genres: string[] | number[]) =>
     genres.map((g, i) => (
       <h2 key={i} className="flex items-center gap-2">
         {g}
-        {i < genres.length - 1 && (<span className="w-2 h-2 rounded-full bg-white" />)}
+        {i < genres.length - 1 && <span className="w-2 h-2 rounded-full bg-white" />}
       </h2>
     ));
+
+
+
 
   return (
     <section className="w-screen min-h-screen relative">
@@ -44,12 +53,20 @@ export default function HeroSection({ data }: { data: MediaItem[] }) {
         <div className="flex">
           {data.map((media, index) => (
             <div key={index} className="min-w-full h-screen relative" dir="rtl">
-              <Image fill priority unoptimized src={`https://image.tmdb.org/t/p/original${media.backdrop_path}`} alt={media.title_ar || media.title_en} className="object-cover" />
+              <Image
+                fill
+                priority
+                unoptimized
+                src={`https://image.tmdb.org/t/p/original${media.backdrop_path}`}
+                alt={media.title_ar || media.title_en}
+                className="object-cover"
+              />
 
-              {/* Gradient overlay */}
+              {/* ✅ تدرج أسود من تحت */}
               <div className="absolute w-full h-[500px] bottom-0 bg-gradient-to-t from-[#09090b] to-transparent z-10" />
 
-              <div className="gsap-anmi w-full md:w-1/2 absolute bottom-1/4 md:bottom-1/7 left-1/2 -translate-x-1/2 text-white z-20 text-center px-5 flex flex-col gap-3">
+              {/* ✅ المحتوى النصي فوق الصورة */}
+              <div className="gsap-anmi w-full md:w-1/2 absolute bottom-1/7 left-1/2 -translate-x-1/2 text-white z-20 text-center px-5 flex flex-col gap-3">
                 <Title>{media.title_ar || media.title_en}</Title>
 
                 {media.overview && (
@@ -66,10 +83,18 @@ export default function HeroSection({ data }: { data: MediaItem[] }) {
                   {media.release_date?.slice(0, 4)}
                 </div>
 
+                {/* ✅ الأزرار */}
                 <div className="flex justify-center flex-wrap items-center gap-1 md:gap-2 mt-2">
-
-                  <Button variant="default" size="sm" className="text-xs" onClick={() => router.push(`/details/${media.type == "فيلم" ? "movie" : "tv"}/${media.id}`)}>شوف التفاصيل</Button>
-                  <Button variant="icon" size="sm" className="text-xs"><Heart /></Button>
+                  <Button
+                    variant="default"
+                    size="sm"
+                    className="text-xs"
+                    onClick={() =>
+                      router.push(`/details/${media.type === "فيلم" ? "movie" : "tv"}/${media.id}`)
+                    }
+                  >
+                    شوف التفاصيل
+                  </Button>
                 </div>
               </div>
             </div>
@@ -77,7 +102,8 @@ export default function HeroSection({ data }: { data: MediaItem[] }) {
         </div>
       </div>
 
-      <div className="absolute bottom-35 md:bottom-15 w-full flex justify-center gap-2 z-30">
+      {/* ✅ نقاط التنقل بين الشرائح */}
+      <div className="absolute bottom-25 md:bottom-15 w-full flex justify-center gap-2 z-30">
         {data.map((_, index) => (
           <button
             key={index}

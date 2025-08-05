@@ -40,6 +40,10 @@ type MainDetails = {
     air_date?: string;
     episode_count?: number;
   }>;
+  genres: {
+    id: number;
+    name: string
+  }[]
   [key: string]: unknown;
 };
 
@@ -89,7 +93,7 @@ export default async function FetchFullDetails(
       fetchFromTMDB(`/${type}/${id}`, "&language=ar"),
       fetchFromTMDB(`/${type}/${id}/images`, ""),
       fetchFromTMDB(`/${type}/${id}/videos`, ""),
-      fetchFromTMDB(`/${type}/${id}/credits`, ""),
+      fetchFromTMDB(`/${type}/${id}/credits`, "&language=ar"),
       fetchFromTMDB(`/${type}/${id}/recommendations`, "&language=ar"),
       fetchFromTMDB(`/${type}/${id}/reviews`),
     ]);
@@ -116,7 +120,6 @@ export default async function FetchFullDetails(
       })),
     };
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const recommendation: MediaItem[] = (recommendations.results || []).map((item: any): MediaItem => ({
       id: item.id,
       title_ar: item.title || item.name || "بدون عنوان",
@@ -132,7 +135,6 @@ export default async function FetchFullDetails(
     }));
 
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const reviewList: ReviewType[] = (reviews.results || []).map((review: any): ReviewType => {
       const avatar = review.author_details?.avatar_path;
 

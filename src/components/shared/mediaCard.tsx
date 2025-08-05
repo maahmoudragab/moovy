@@ -27,7 +27,7 @@ export default function MediaCard({ item, title, section = false }: { item: Medi
       ${section ? 'w-full' : 'w-[130px] md:w-[150px] lg:w-[170px]'}
       flex-shrink-0 rounded-xl overflow-hidden transition-all duration-500`} >
 
-      <Image src={`https://image.tmdb.org/t/p/w780${item.poster_path}`} alt={item.title_ar} fill unoptimized className="object-cover" />
+      <Image src={`https://image.tmdb.org/t/p/w780${item.poster_path}`} alt={item.title_ar || ""} fill unoptimized className="object-cover" />
 
       {!isMobile && (
         <div className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black/90 to-transparent text-white px-3 py-2 z-20 opacity-0 translate-y-full group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500 space-y-1">

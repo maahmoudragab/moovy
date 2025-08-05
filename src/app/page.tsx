@@ -24,7 +24,7 @@ import FetchKrSeries from "@/data/series/fetch_kr_series";
 export default async function Home() {
   const [hero_data, popular_movies, arabic_movies, turkish_movies, anime_movies, kr_movie,
     popular_series, arabic_series, turkish_series, anime_series, kr_series, upcoming,]
-    = (await Promise.all([FetchTrending(), FetchPopularMovies(), FetchArabicMovies(), FetchPopularTurkishMovies(), FetchAnimeMovie(), FetchKrMovies(),
+    = (await Promise.all([(await FetchTrending()).slice(0, 9), FetchPopularMovies(), FetchArabicMovies(), FetchPopularTurkishMovies(), FetchAnimeMovie(), FetchKrMovies(),
     FetchPopularSeries(), FetchArabicSeries(), FetchPopularTurkishSeries(), FetchAnimeSeries(), FetchKrSeries(), FetchUpcoming()])).map((arr) => arr.slice(0, 12));
 
   return (
