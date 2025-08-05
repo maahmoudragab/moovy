@@ -141,12 +141,14 @@ export default function DetailsContent({ item }: { item: FullDetailsType }) {
 
     setIsLoading(true);
 
+    const getValidTitle = (...titles: any[]): string =>
+      titles.find((t) => typeof t === "string") || "";
 
     // جهز الداتا بصيغة FavoriteItem
     const favoriteItem: MediaItem = {
       id: main.id,
-      title_ar: main.title_ar || main.title || "",
-      title_en: main.title_en || main.original_title || main.name || "",
+      title_ar: getValidTitle(main.title_ar, main.title),
+      title_en: getValidTitle(main.title_en, main.original_title, main.name),
       original_language: main.original_language || "",
       overview: main.overview || "",
       genre_ids: (main.genres || []).map((g) => g.name), // استخدم IDs بس عشان Firestore

@@ -7,7 +7,7 @@ import Image from "next/image"
 // Firebase
 import { onAuthStateChanged } from "firebase/auth"
 import { auth } from "@/firebase/firebaseConfig"
-import { logoutUser, getUserProfile } from "@/firebase/authActions"
+import { getUserProfile } from "@/firebase/authActions"
 // UI Components
 import { Button } from "@/components/ui/button"
 import { Search, Home, Film, Tv, Clock } from "lucide-react"
@@ -50,12 +50,6 @@ export default function Navbar() {
     })
     return () => unsubscribe()
   }, [])
-
-  const handleLogout = async () => {
-    await logoutUser()
-    setUser(null)
-    setProfile(null)
-  }
 
   // ================================
   // 🔍 Search Logic
