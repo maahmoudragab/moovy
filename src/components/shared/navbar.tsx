@@ -84,16 +84,20 @@ export default function Navbar() {
   }
 
   const handleSearchButtonClick = (e: React.MouseEvent) => {
-    e.stopPropagation()
-    showInput ? handleSearch() : setShowInput(true)
-  }
+    e.stopPropagation();
+    if (showInput) {
+      handleSearch();
+    } else {
+      setShowInput(true);
+    }
+  };
 
   const renderAuthSection = (isMobile: boolean) => {
     if (isLoading) return null
 
     if (user && (!profile || Object.keys(profile).length <= 2)) {
       return (
-        <Button variant="outline" onClick={() => router.push("/auth/complate-profile")}>اكمال البيانات</Button>
+        <Button variant="outline" onClick={() => router.push("/auth/complete-profile")}>اكمال البيانات</Button>
       )
     }
 

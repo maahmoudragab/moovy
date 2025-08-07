@@ -101,7 +101,7 @@ export default function ProfilePage() {
 
       const data = await getUserProfile(user.uid);
       if (!data || Object.keys(data).length <= 1) {
-        router.replace("/auth/complate-profile");
+        router.replace("/auth/complete-profile");
         return;
       }
       setProfile(data);

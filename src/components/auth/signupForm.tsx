@@ -47,7 +47,7 @@ export default function SignupForm() {
     setIsLoading(true)
     try {
       await registerWithEmail(data.email, data.password)
-      router.push('/auth/complate-profile')
+      router.push('/auth/complete-profile')
     } catch (err: any) {
       if (err.code === 'auth/email-already-in-use') {
         setServerError('الإيميل ده مسجل قبل كده، حاول تاني')
@@ -64,7 +64,7 @@ export default function SignupForm() {
     setIsLoading(true)
     try {
       await loginWithGoogle()
-      router.push('/auth/complate-profile')
+      router.push('/auth/complete-profile')
     } catch (error) {
       console.log(error);
       setServerError('فشل تسجيل الحساب بجوجل')
