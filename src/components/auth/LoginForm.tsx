@@ -28,7 +28,6 @@ import { Eye, EyeOff, Mail, Lock, Chrome } from "lucide-react"
 // Types
 type LoginFormData = z.infer<typeof loginSchema>
 
-
 export default function LoginForm() {
   const [showPassword, setShowPassword] = useState(false)
   const [serverError, setServerError] = useState("")

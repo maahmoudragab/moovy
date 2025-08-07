@@ -28,7 +28,6 @@ import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover
 // Types
 type FormData = z.infer<typeof editProfileSchema>
 
-
 // Constants
 const AVATARS = Array.from({ length: 12 }, (_, i) => `/images/avatars/${i + 1}.png`)
 

@@ -52,7 +52,7 @@ export default function CompleteProfile() {
   const [selectedAvatar, setSelectedAvatar] = useState("")
   const [serverError, setServerError] = useState("")
   const router = useRouter()
-
+ 
   const {
     register,
     handleSubmit,
