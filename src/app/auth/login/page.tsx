@@ -1,13 +1,20 @@
 "use client"
 
+// React
 import { useEffect, useState } from "react"
+
+// Next.js
 import { useRouter } from "next/navigation"
+import Image from "next/image"
+
+// Firebase
 import { onAuthStateChanged } from "firebase/auth"
 import { auth } from "@/firebase/firebaseConfig"
 
-import LoginForm from "@/components/auth/LoginForm"
+// Components
+import LoginForm from "@/components/auth/loginForm"
 import Title from "@/components/ui/title"
-import Image from "next/image"
+
 
 export default function LoginPage() {
   const router = useRouter()

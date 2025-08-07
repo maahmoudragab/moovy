@@ -1,7 +1,7 @@
 // Components
 import Navbar from "@/components/shared/navbar";
 import HeroSection from "@/components/heroSection";
-import MainSlider from "@/components/shared/mainSlider";
+import SectionSlider from "@/components/shared/sectionSlider";
 
 // Single Requests
 import FetchTrending from "@/data/single_requests/fetch_trending";
@@ -32,52 +32,28 @@ export default async function Home() {
       <Navbar />
       <HeroSection data={hero_data} />
       <div className="mx-4 md:mx-8 flex flex-col gap-3 md:gap-6">
-        <div className="px-2 md:px-4 py-2 md:py-4 bg-[#ffffff1a] border-1 rounded-xl">
-          <MainSlider path="popular_movies" title="الأفلام الرائجة" data={popular_movies} />
-        </div>
+        <SectionSlider path="popular_movies" title="الأفلام الرائجة" data={popular_movies} />
 
-        <div className="px-2 md:px-4 py-2 md:py-4 bg-[#ffffff1a] border-1 rounded-xl">
-          <MainSlider path="popular_series" title="المسلسلات الرائجة" data={popular_series} />
-        </div>
+        <SectionSlider path="popular_series" title="المسلسلات الرائجة" data={popular_series} />
 
-        <div className="px-2 md:px-4 py-2 md:py-4 bg-[#ffffff1a] border-1 rounded-xl">
-          <MainSlider path="arabic_movies" title="أفلام عربية" data={arabic_movies} />
-        </div>
+        <SectionSlider path="arabic_movies" title="أفلام عربية" data={arabic_movies} />
 
-        <div className="px-2 md:px-4 py-2 md:py-4 bg-[#ffffff1a] border-1 rounded-xl">
-          <MainSlider path="arabic_series" title="مسلسلات عربية" data={arabic_series} />
-        </div>
+        <SectionSlider path="arabic_series" title="مسلسلات عربية" data={arabic_series} />
 
-        <div className="px-2 md:px-4 py-2 md:py-4 bg-[#ffffff1a] border-1 rounded-xl">
-          <MainSlider path="turkish_movies" title="أفلام تركية" data={turkish_movies} />
-        </div>
+        <SectionSlider path="turkish_movies" title="أفلام تركية" data={turkish_movies} />
 
-        <div className="px-2 md:px-4 py-2 md:py-4 bg-[#ffffff1a] border-1 rounded-xl">
-          <MainSlider path="turkish_series" title="مسلسلات تركية" data={turkish_series} />
-        </div>
+        <SectionSlider path="turkish_series" title="مسلسلات تركية" data={turkish_series} />
 
-        <div className="px-2 md:px-4 py-2 md:py-4 bg-[#ffffff1a] border-1 rounded-xl">
-          <MainSlider path="anime_movies" title="أفلام أنمي" data={anime_movies} />
-        </div>
+        <SectionSlider path="anime_movies" title="أفلام أنمي" data={anime_movies} />
 
-        <div className="px-2 md:px-4 py-2 md:py-4 bg-[#ffffff1a] border-1 rounded-xl">
-          <MainSlider path="anime_series" title="مسلسلات أنمي" data={anime_series} />
-        </div>
+        <SectionSlider path="anime_series" title="مسلسلات أنمي" data={anime_series} />
 
-        <div className="px-2 md:px-4 py-2 md:py-4 bg-[#ffffff1a] border-1 rounded-xl">
-          <MainSlider path="kr_movies" title="أفلام كورية" data={kr_movie} />
-        </div>
+        <SectionSlider path="kr_movies" title="أفلام كورية" data={kr_movie} />
 
-        <div className="px-2 md:px-4 py-2 md:py-4 bg-[#ffffff1a] border-1 rounded-xl">
-          <MainSlider path="kr_series" title="مسلسلات كورية" data={kr_series} />
-        </div>
+        <SectionSlider path="kr_series" title="مسلسلات كورية" data={kr_series} />
 
-        <div className="px-2 md:px-4 py-2 md:py-4 bg-[#ffffff1a] border-1 rounded-xl">
-          <MainSlider title="الأعمال القادمة" data={upcoming} />
-        </div>
+        <SectionSlider title="الأعمال القادمة" data={upcoming} />
       </div>
-
-
     </main>
   );
 }

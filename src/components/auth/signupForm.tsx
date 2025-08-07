@@ -1,29 +1,33 @@
 'use client'
+// React
+import { useState } from "react"
 
-import { useState } from 'react'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { signupSchema } from '@/validations/auth'
-import { z } from 'zod'
+// Next.js
+import Link from "next/link"
+import { useRouter } from "next/navigation"
 
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
-import { Label } from '@/components/ui/label'
-import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
-import { Separator } from '@/components/ui/separator'
+// Firebase
+import { registerWithEmail, loginWithGoogle } from "@/firebase/authActions"
 
-import { Eye, EyeOff, Mail, Lock, Chrome } from 'lucide-react'
-import Link from 'next/link'
-import { auth } from '@/firebase/firebaseConfig'
-import { createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from 'firebase/auth'
-import { useRouter } from 'next/navigation'
+// Zod Schema & Form Controller
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { z } from "zod"
+import { signupSchema } from "@/validations/auth"
+
+// UI Components
+import { Label } from "@/components/ui/label"
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
+import { Separator } from "@/components/ui/separator"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+
+// Icons
+import { Eye, EyeOff, Mail, Lock, Chrome } from "lucide-react"
+
+// Types
 type FormData = z.infer<typeof signupSchema>
+
 
 export default function SignupForm() {
   const [showPassword, setShowPassword] = useState(false)
@@ -42,7 +46,7 @@ export default function SignupForm() {
     setServerError('')
     setIsLoading(true)
     try {
-      await createUserWithEmailAndPassword(auth, data.email, data.password)
+      await registerWithEmail(data.email, data.password)
       router.push('/auth/complate-profile')
     } catch (err: any) {
       if (err.code === 'auth/email-already-in-use') {
@@ -59,8 +63,7 @@ export default function SignupForm() {
     setServerError('')
     setIsLoading(true)
     try {
-      const provider = new GoogleAuthProvider()
-      await signInWithPopup(auth, provider)
+      await loginWithGoogle()
       router.push('/auth/complate-profile')
     } catch (error) {
       console.log(error);

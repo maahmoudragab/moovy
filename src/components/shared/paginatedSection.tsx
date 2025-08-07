@@ -39,7 +39,7 @@ export default function PaginatedSection({ title, totalPages, currentPage, setCu
   }, [currentPage])
 
   return (
-    <section className="px-2 md:px-4 py-4 bg-[#ffffff1a] border border-white/10 rounded-xl">
+    <section className="px-2 md:px-4 py-2 bg-[#ffffff1a] border border-white/10 rounded-xl">
       {/* ديسكتوب: عنوان + كنترول */}
       <div className="mb-4 hidden md:flex items-center justify-between ">
         <Title>{title}</Title>
@@ -63,7 +63,7 @@ export default function PaginatedSection({ title, totalPages, currentPage, setCu
 
       {/* موبايل: كنترول تحت */}
       {totalPages > 1 && (
-        <Controls {...{ currentPage, totalPages, setCurrentPage, className: "flex md:hidden justify-center mt-4" }} />
+        <Controls {...{ currentPage, totalPages, setCurrentPage, className: "flex md:hidden justify-center mt-2" }} />
       )}
     </section>
   )
@@ -98,7 +98,7 @@ function Controls({
         disabled={currentPage === totalPages}
         className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-white/10 transition disabled:opacity-30 disabled:cursor-not-allowed"
         aria-label="التالي"
-      >
+      > 
         <ChevronLeft className="w-4 h-4" />
       </button>
     </div>

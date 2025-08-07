@@ -1,34 +1,33 @@
 "use client"
-
-// المكتبات الخارجية
+// React
 import { useState } from "react"
-import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
-import * as z from "zod"
+
+// Next.js
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import {
-  signInWithEmailAndPassword,
-  signInWithPopup,
-  GoogleAuthProvider,
-} from "firebase/auth"
 
-// مكونات الواجهة
+// Firebase
+import { loginWithEmail, loginWithGoogle } from "@/firebase/authActions"
+
+// Zod Schema & Form Controller
+import * as z from "zod"
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { loginSchema } from "@/validations/auth"
+
+// UI Components
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import {
-  Card, CardContent, CardDescription, CardHeader, CardTitle,
-} from "@/components/ui/card"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
+
+// Icons
 import { Eye, EyeOff, Mail, Lock, Chrome } from "lucide-react"
 
-// الفايربيز والسكيمات
-import { auth } from "@/firebase/firebaseConfig"
-import { loginSchema } from "@/validations/auth"
-
-// نوع بيانات النموذج
+// Types
 type LoginFormData = z.infer<typeof loginSchema>
+
 
 export default function LoginForm() {
   const [showPassword, setShowPassword] = useState(false)
@@ -51,7 +50,7 @@ export default function LoginForm() {
     setServerError("")
 
     try {
-      await signInWithEmailAndPassword(auth, data.email, data.password)
+      await loginWithEmail(data.email, data.password)
       router.push("/") // بعد تسجيل الدخول يرجعه للهوم
     } catch (error) {
       console.log(error)
@@ -67,8 +66,7 @@ export default function LoginForm() {
     setServerError("")
 
     try {
-      const provider = new GoogleAuthProvider()
-      await signInWithPopup(auth, provider)
+      await loginWithGoogle()
       router.push("/")
     } catch (error) {
       console.log(error)

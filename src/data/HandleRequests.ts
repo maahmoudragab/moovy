@@ -28,7 +28,6 @@ export default async function HandleRequests(
 
     return res.results
       .filter((i: { poster_path: string }) => i.poster_path)
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .map((item: any) => ({
         id: item.id,
         title_ar: item.title || item.name,

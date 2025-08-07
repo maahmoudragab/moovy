@@ -1,45 +1,32 @@
-// firebase/databaseActions.ts
-
-import { arrayRemove, arrayUnion, doc, setDoc, updateDoc } from "firebase/firestore";
-import { auth } from "./firebaseConfig";
-import { getDoc } from "firebase/firestore";
+import { arrayUnion, doc, updateDoc, getDoc } from "firebase/firestore";
 import { db } from "@/firebase/firebaseConfig";
+import { MediaItem } from "@/data/HandleRequests";
 
-
-export const addToFavorites = async (mediaId: any) => {
-  const user = auth.currentUser;
-  if (!user) return console.log('🛑 مش لوجن');
-
-  const userRef = doc(db, 'users', user.uid);
+export const addToFavorites = async (userId: string, item: MediaItem) => {
+  const userRef = doc(db, 'users', userId);
 
   try {
     await updateDoc(userRef, {
-      favorites: arrayUnion(mediaId)
+      favorites: arrayUnion(item),
     });
-    console.log('✅ اتضاف للمفضلة');
-  } catch (err: any) {
-    if (err.code === 'not-found') {
-      // لو الوثيقة مش موجودة، أنشئها
-      await setDoc(userRef, {
-        favorites: [mediaId]
-      });
-      console.log('📄 اتعملت وثيقة جديدة واتضاف فيها الميديا');
-    } else {
-      console.error('❌ مشكلة في الإضافة:', err);
-    }
+    console.log('✅ اتحفظ في المفضلة');
+  } catch (err) {
+    console.error('❌ مشكلة في الإضافة:', err);
   }
 };
 
-export const removeFromFavorites = async (mediaId: any) => {
-  const user = auth.currentUser;
-  if (!user) return console.log('🛑 مش لوجن');
-
-  const userRef = doc(db, 'users', user.uid);
-
+export const removeFromFavorites = async (userId: string, itemId: number) => {
   try {
-    await updateDoc(userRef, {
-      favorites: arrayRemove(mediaId)
-    });
+    const ref = doc(db, 'users', userId);
+    const snap = await getDoc(ref);
+    console.log("reeeeeeeeeeef", ref)
+    console.log("snaaaaaaaaaap", snap)
+    if (!snap.exists()) return console.log('❌ المستخدم مش موجود');
+
+    const favs = snap.data().favorites || [];
+    const updated = favs.filter((item: any) => item.id !== itemId);
+
+    await updateDoc(ref, { favorites: updated });
     console.log('🗑️ اتشال من المفضلة');
   } catch (err) {
     console.error('❌ مشكلة في الحذف:', err);
@@ -48,21 +35,21 @@ export const removeFromFavorites = async (mediaId: any) => {
 
 export const checkIsFavorite = async (uid: string, movieId: number): Promise<boolean> => {
   try {
-    const userDocRef = doc(db, "users", uid)
-    const userSnap = await getDoc(userDocRef)
+    const userDocRef = doc(db, "users", uid);
+    const userSnap = await getDoc(userDocRef);
 
     if (!userSnap.exists()) {
-      console.warn("📛 المستخدم مش موجود")
-      return false
+      console.warn("📛 المستخدم مش موجود");
+      return false;
     }
 
-    const userData = userSnap.data()
-    const favorites = userData.favorites || []
+    const userData = userSnap.data();
+    const favorites = userData.favorites || [];
 
-    const isFav = favorites.some((fav: any) => fav.id === movieId)
-    return isFav
+    const isFav = favorites.some((fav: any) => fav.id === movieId);
+    return isFav;
   } catch (error) {
-    console.error("🔥 حصلت مشكلة في التحقق من الفيفوريت:", error)
-    return false
+    console.error("🔥 حصلت مشكلة في التحقق من الفيفوريت:", error);
+    return false;
   }
-}
+};

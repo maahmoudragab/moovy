@@ -1,14 +1,19 @@
 'use client'
+// React
+import { useEffect, useState } from "react"
 
-import { useEffect, useState } from 'react'
-import { onAuthStateChanged } from 'firebase/auth'
-import { useRouter } from 'next/navigation'
-import { auth } from '@/firebase/firebaseConfig'
-import { getUserProfile } from '@/firebase/authActions'
+// Next.js
+import { useRouter } from "next/navigation"
+import Image from "next/image"
 
-import CompleteProfile from '@/components/auth/CompleteProfile'
-import Title from '@/components/ui/title'
-import Image from 'next/image'
+// Firebase
+import { onAuthStateChanged } from "firebase/auth"
+import { auth } from "@/firebase/firebaseConfig"
+import { getUserProfile } from "@/firebase/authActions"
+
+// Components
+import CompleteProfile from "@/components/auth/completeProfile"
+import Title from "@/components/ui/title"
 
 export default function SignupPage() {
   const [checking, setChecking] = useState(true)

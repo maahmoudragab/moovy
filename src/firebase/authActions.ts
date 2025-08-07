@@ -1,18 +1,24 @@
 
+// Firebase Auth
 import {
   createUserWithEmailAndPassword,
-  GoogleAuthProvider, signInWithPopup,
-  signInWithEmailAndPassword, signOut,
+  GoogleAuthProvider,
+  signInWithPopup,
+  signInWithEmailAndPassword,
+  signOut,
   onAuthStateChanged,
   sendPasswordResetEmail,
-  getAuth
-} from 'firebase/auth';
-import { doc, setDoc, getDoc } from 'firebase/firestore';
-import { auth, db } from '@/firebase/firebaseConfig';
-import type { User } from 'firebase/auth';
-import { notFound } from 'next/navigation'
-import { updateDoc } from "firebase/firestore";
+  getAuth,
+  sendEmailVerification,
+  type User,
+} from "firebase/auth"
 
+// Firebase Firestore
+import { doc, setDoc, getDoc, updateDoc } from "firebase/firestore"
+import { auth, db } from "@/firebase/firebaseConfig"
+
+// Next.js
+import { notFound } from "next/navigation"
 
 export const registerWithEmail = async (email: string, password: string) => {
   const res = await createUserWithEmailAndPassword(auth, email, password);
@@ -24,13 +30,14 @@ export const loginWithEmail = async (email: string, password: string) => {
     const res = await signInWithEmailAndPassword(auth, email, password);
     return { user: res.user };
   } catch (err: any) {
-    return { error: err.code };
+    throw Error(err)
   }
 };
 
 export const loginWithGoogle = async () => {
   const provider = new GoogleAuthProvider();
   const res = await signInWithPopup(auth, provider);
+  console.log("loginWithGoogle", res)
   return res.user;
 };
 
@@ -42,8 +49,6 @@ export const logoutUser = async () => {
   }
 };
 
-// Firestore بتخزن بيانات البروفايل بتاع اليوزر في
-//  هو الآي دي بتاع المستخدم uid
 export const saveUserProfile = async (
   uid: string,
   data: {
@@ -51,7 +56,7 @@ export const saveUserProfile = async (
     name: string;
     birthdate: string;
     avatar: string;
-    favoriteGenres: string[];
+    favoriteGenres: number[];
     email: string;
     provider: string;
     isEmailVerified: boolean;
@@ -61,7 +66,6 @@ export const saveUserProfile = async (
   await setDoc(doc(db, 'users', uid), data);
 };
 
-// بتجيب بيانات البروفايل من Firestore باستخدام uid.
 export const getUserProfile = async (uid: string) => {
   const snap = await getDoc(doc(db, 'users', uid));
   return snap.exists() ? snap.data() : null;
@@ -96,10 +100,6 @@ export const redirectIfLoggedIn = () => {
   return unsub;
 };
 
-
-
-
-// تحديث بيانات البروفايل
 export const updateUserProfile = async (uid: string, newData: Partial<{
   name: string;
   birthdate: string;
@@ -114,3 +114,30 @@ export const updateUserProfile = async (uid: string, newData: Partial<{
     return { success: false, error: error.code };
   }
 };
+
+export const sendVerificationLink = async () => {
+  const user = auth.currentUser;
+  if (user && !user.emailVerified) {
+    await sendEmailVerification(user, { url: "http://localhost:3000/profile" });
+  }
+};
+
+export const checkEmailVerificationAndUpdate = async () => {
+  const user = auth.currentUser;
+  if (!user) return;
+
+  await user.reload(); // لازم نعمل reload علشان نجيب أحدث نسخة من اليوزر
+
+  if (user.emailVerified) {
+    try {
+      // نحدث في Firestore إن الإيميل اتفعل
+      await updateDoc(doc(db, 'users', user.uid), {
+        isEmailVerified: true,
+        verifiedAt: new Date().toISOString(), // ممكن تستخدم Timestamp.now() لو حابب
+      });
+    } catch (error: any) {
+      console.error("❌ Error updating email verification status:", error);
+    }
+  }
+};
+

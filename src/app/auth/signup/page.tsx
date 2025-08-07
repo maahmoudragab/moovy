@@ -1,12 +1,20 @@
 // app/auth/signup/page.tsx
 "use client";
-import SignupForm from "@/components/auth/signupForm";
-import Title from "@/components/ui/title";
-import { auth } from "@/firebase/firebaseConfig";
-import { onAuthStateChanged } from "firebase/auth";
-import Image from "next/image";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+// React
+import { useEffect, useState } from "react"
+
+// Next.js
+import Image from "next/image"
+import { useRouter } from "next/navigation"
+
+// Firebase
+import { onAuthStateChanged } from "firebase/auth"
+import { auth } from "@/firebase/firebaseConfig"
+
+// Components
+import SignupForm from "@/components/auth/signupForm"
+import Title from "@/components/ui/title"
+
 export default function SignupPage() {
   const router = useRouter()
   const [checking, setChecking] = useState(true) // ⬅️ حالة فحص المستخدم

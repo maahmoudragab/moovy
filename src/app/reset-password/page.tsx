@@ -1,12 +1,19 @@
 'use client';
+// React
+import { useState } from "react"
 
-import { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { z } from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { resetPassword } from '@/firebase/authActions';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
+// Zod Schema & Form Controller
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { z } from "zod"
+
+// Firebase
+import { resetPassword } from "@/firebase/authActions"
+
+// UI Components
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
+
 
 const schema = z.object({
   email: z.string().email("اكتب إيميل صحيح"),

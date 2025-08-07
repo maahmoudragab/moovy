@@ -12,7 +12,7 @@ import useEmblaCarousel from "embla-carousel-react";
 
 // ✅ App Components
 import Navbar from "@/components/shared/navbar";
-import SectionSlider from "@/components/shared/mainSlider";
+import SectionSlider from "@/components/shared/sectionSlider";
 import PaginatedSection from "@/components/shared/paginatedSection";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertTitle } from "@/components/ui/alert";
@@ -141,14 +141,11 @@ export default function DetailsContent({ item }: { item: FullDetailsType }) {
 
     setIsLoading(true);
 
-    const getValidTitle = (...titles: any[]): string =>
-      titles.find((t) => typeof t === "string") || "";
-
     // جهز الداتا بصيغة FavoriteItem
     const favoriteItem: MediaItem = {
       id: main.id,
-      title_ar: getValidTitle(main.title_ar, main.title),
-      title_en: getValidTitle(main.title_en, main.original_title, main.name),
+      title_ar: [main.title_ar, main.title, main.original_title, main.name].find(v => typeof v === "string") || "",
+      title_en: [main.original_title, main.name].find(v => typeof v === "string") || "",
       original_language: main.original_language || "",
       overview: main.overview || "",
       genre_ids: (main.genres || []).map((g) => g.name), // استخدم IDs بس عشان Firestore
@@ -161,10 +158,11 @@ export default function DetailsContent({ item }: { item: FullDetailsType }) {
 
 
     if (isFavorite) {
-      await removeFromFavorites(favoriteItem);
+      await removeFromFavorites(user.uid, favoriteItem.id);
       setIsFavorite(false);
+
     } else {
-      await addToFavorites(favoriteItem);
+      await addToFavorites(user.uid, favoriteItem);
       setIsFavorite(true);
     }
 
@@ -200,17 +198,15 @@ export default function DetailsContent({ item }: { item: FullDetailsType }) {
       <Navbar />
       <main className="relative w-full">
         {/* Alert */}
-        <div className={`fixed bottom-17 md:bottom-7 right-1/2 translate-x-1/2 z-45 transition-all duration-500 
+        <div className={`w-full fixed bottom-17 md:bottom-7 right-1/2 translate-x-1/2 z-45 transition-all duration-500
           ${showAlert ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5 pointer-events-none"}`}>
-          <Alert variant="default" className="w-fit shadow-lg overflow-hidden">
+          <Alert variant="default" className="w-fit mx-auto shadow-lg overflow-hidden flex items-center gap-2">
             <CheckCircle />
-            <AlertTitle className="text-foreground">
+            <AlertTitle className="text-foreground w-full">
               {isFavorite ? "تمت الإضافة إلى المفضلة" : "تمت الإزالة من المفضلة"}
             </AlertTitle>
-            <div className="absolute bottom-0 left-0 h-1 bg-green-600 animate-pulse w-full"></div>
           </Alert>
         </div>
-
         {/* 🔹 Background */}
         <div className="absolute inset-0 -z-10">
           {(media.images?.[0]?.file_path || main.backdrop_blur_path) && (
@@ -442,9 +438,7 @@ export default function DetailsContent({ item }: { item: FullDetailsType }) {
                           unoptimized
                           className="object-cover"
                         />
-                        <div className="absolute inset-0 flex items-center justify-center bg-black/40">
-                          <Play className="w-8 h-8 text-white" />
-                        </div>
+                          <Play className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 bg-black/50 p-2 rounded-full box-content  text-white/80" />
                       </div>
                     )}
 
@@ -508,12 +502,10 @@ export default function DetailsContent({ item }: { item: FullDetailsType }) {
 
           {/* الاقتراحات */}
           {recommendation.length > 2 && (
-            <div className="px-2 md:px-4 py-2 md:py-4 bg-[#ffffff1a] border-1 rounded-xl">
               <SectionSlider
                 title="الأقتراحات"
                 data={recommendation.slice(0, 12)}
               />
-            </div>
           )}
         </div>
       </main>

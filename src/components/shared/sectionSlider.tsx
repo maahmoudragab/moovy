@@ -24,7 +24,7 @@ export default function SectionSlider({ title, data, path }: MoviesSliderProps) 
   const router = useRouter();
 
   return (
-    <section>
+    <section className="px-2 md:px-4 py-2 md:py-4 bg-[#ffffff1a] border-1 rounded-xl">
       <div className="flex justify-between items-center mb-4">
         <Title>{title}</Title>
         {title !== "الأعمال القادمة" && title !== "الأقتراحات" && title !== "قائمة المفضلة" && (
@@ -36,16 +36,13 @@ export default function SectionSlider({ title, data, path }: MoviesSliderProps) 
 
       <div className="overflow-hidden" ref={emblaRef}>
         <div className="flex gap-2 md:gap-3">
-          {!data || data.length === 0 || data.filter((i) => i.poster_path).length === 0 ? (
-            <p className="text-white/90 w-full text-center text-xs "> مفيش حاجة في المفضلة دلوقتي</p>
-          ) : (
+          {data.filter((i) => i.poster_path) && (
             data
               .filter((i) => i.poster_path)
               .map((item, i) => (
                 <MediaCard key={i} item={item} title={title} />
               ))
           )}
-
         </div>
       </div>
     </section >

@@ -89,38 +89,45 @@ export default async function FetchFullDetails(
   type: "movie" | "tv"
 ): Promise<FullDetailsType | null> {
   try {
-    const [main, images, videos, credits, recommendations, reviews] = await Promise.all([
+    const results = await Promise.allSettled([
       fetchFromTMDB(`/${type}/${id}`, "&language=ar"),
       fetchFromTMDB(`/${type}/${id}/images`, ""),
       fetchFromTMDB(`/${type}/${id}/videos`, ""),
       fetchFromTMDB(`/${type}/${id}/credits`, "&language=ar"),
       fetchFromTMDB(`/${type}/${id}/recommendations`, "&language=ar"),
-      fetchFromTMDB(`/${type}/${id}/reviews`),
+      fetchFromTMDB(`/${type}/${id}/reviews`)
     ]);
+
+    const [main, images, videos, credits, recommendations, reviews] = results.map(
+      (res) => (res.status === "fulfilled" ? res.value : null)
+    );
+
+    if (!main) return null;
 
     const mainDetails: MainDetails = {
       ...main,
       backdrop_path: `https://image.tmdb.org/t/p/original${main.backdrop_path}`,
       backdrop_blur_path: `https://image.tmdb.org/t/p/w92${main.backdrop_path}`,
       poster_path: `https://image.tmdb.org/t/p/original${main.poster_path}`,
-      type: type === "movie" ? "فيلم" : "مسلسل",
+      type: type === "movie" ? "فيلم" : "مسلسل"
     };
 
     const media: MediaDetails = {
-      images: (images.backdrops?.slice(0, 10).map((img: MediaImageType) => ({
+      images: (images?.backdrops || []).slice(0, 10).map((img: MediaImageType) => ({
         ...img,
         file_path: `https://image.tmdb.org/t/p/w1280${img.file_path}`
-      })) as MediaImageType[]) || [],
-      videos: (videos.results || []).slice(0, 10).map((video: VideoType): VideoType => ({
+      })),
+      videos: (videos?.results || []).slice(0, 10).map((video: VideoType): VideoType => ({
         ...video,
         type: translateVideoType(video.type)
-      })), cast: (credits.cast || []).slice(0, 20).map((actor: CastType): CastType => ({
+      })),
+      cast: (credits?.cast || []).slice(0, 20).map((actor: CastType): CastType => ({
         ...actor,
         profile_path: actor.profile_path
-      })),
+      }))
     };
 
-    const recommendation: MediaItem[] = (recommendations.results || []).map((item: any): MediaItem => ({
+    const recommendation: MediaItem[] = (recommendations?.results || []).map((item: any): MediaItem => ({
       id: item.id,
       title_ar: item.title || item.name || "بدون عنوان",
       title_en: item.original_title || item.original_name || "",
@@ -131,13 +138,11 @@ export default async function FetchFullDetails(
       poster_path: item.poster_path,
       release_date: item.release_date || item.first_air_date || "",
       type: item.media_type === "tv" || item.first_air_date ? "مسلسل" : "فيلم",
-      vote_average: item.vote_average || 0,
+      vote_average: item.vote_average || 0
     }));
 
-
-    const reviewList: ReviewType[] = (reviews.results || []).map((review: any): ReviewType => {
+    const reviewList: ReviewType[] = (reviews?.results || []).map((review: any): ReviewType => {
       const avatar = review.author_details?.avatar_path;
-
       const fixedAvatar = avatar
         ? avatar.startsWith("/https")
           ? avatar.substring(1)
@@ -153,14 +158,14 @@ export default async function FetchFullDetails(
           name: review.author_details?.name || "",
           username: review.author_details?.username || "",
           avatar_path: fixedAvatar,
-          rating: review.author_details?.rating ?? null,
-        },
+          rating: review.author_details?.rating ?? null
+        }
       };
     });
 
     console.log("تفاصيل العمل:", mainDetails);
-    return { main: mainDetails, media, recommendation, reviews: reviewList };
 
+    return { main: mainDetails, media, recommendation, reviews: reviewList };
   } catch (err) {
     console.error("❌ فشل في جلب التفاصيل:", err);
     return null;

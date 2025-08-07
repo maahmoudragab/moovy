@@ -34,7 +34,7 @@ export default function MediaCard({ item, title, section = false }: { item: Medi
           <h3 className="font-bold text-sm md:text-base truncate">{item.title_ar}</h3>
           <div className="flex items-center justify-between text-xs opacity-85">
             {item.genre_ids && (
-              <p className="text-[10px] opacity-70 truncate w-1/2">{item.genre_ids.join("، ")}</p>
+              <p className="text-[10px] opacity-70 truncate w-[70%]">{item.genre_ids.join("، ")}</p>
             )}
             <span>{item.release_date?.slice(0, 4)}</span>
           </div>
