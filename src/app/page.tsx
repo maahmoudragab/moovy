@@ -31,7 +31,7 @@ export default async function Home() {
     <main className="flex flex-col gap-5 md:gap-2">
       <Navbar />
       <HeroSection data={hero_data} />
-      <div className="mx-4 md:mx-8 flex flex-col gap-3 md:gap-6">
+      <div className="mx-4 md:mx-8 flex flex-col gap-3 md:gap-5">
         <SectionSlider path="popular_movies" title="الأفلام الرائجة" data={popular_movies} />
 
         <SectionSlider path="popular_series" title="المسلسلات الرائجة" data={popular_series} />

@@ -1,4 +1,4 @@
-import { arrayUnion, doc, updateDoc, getDoc } from "firebase/firestore";
+import { arrayUnion, doc, updateDoc, getDoc, setDoc } from "firebase/firestore";
 import { db } from "@/firebase/firebaseConfig";
 import { MediaItem } from "@/data/HandleRequests";
 
@@ -51,5 +51,18 @@ export const checkIsFavorite = async (uid: string, movieId: number): Promise<boo
   } catch (error) {
     console.error("🔥 حصلت مشكلة في التحقق من الفيفوريت:", error);
     return false;
+  }
+};
+
+export const addToRecentViews = async (userId: string, item: MediaItem) => {
+  const userRef = doc(db, 'users', userId);
+
+  try {
+    await updateDoc(userRef, {
+      recent_views: arrayUnion(item),
+    });
+    console.log('🕓 اتحفظ في الريسنت');
+  } catch (err) {
+    console.error('❌ مشكلة في حفظ الريسنت:', err);
   }
 };

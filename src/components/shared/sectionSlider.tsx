@@ -15,7 +15,7 @@ import Title from "@/components/ui/title";
 
 interface MoviesSliderProps {
   title: string;
-  path?: string;
+  path?: string | boolean;
   data: MediaItem[];
 }
 
@@ -27,7 +27,7 @@ export default function SectionSlider({ title, data, path }: MoviesSliderProps) 
     <section className="px-2 md:px-4 py-2 md:py-4 bg-[#ffffff1a] border-1 rounded-xl">
       <div className="flex justify-between items-center mb-4">
         <Title>{title}</Title>
-        {title !== "الأعمال القادمة" && title !== "الأقتراحات" && title !== "قائمة المفضلة" && (
+        {path && (
           <h3 className="text-primary hover:underline cursor-pointer text-xs md:text-sm"
             onClick={() => router.push(`/section/${path}`)}
           >شاهد الكل</h3>

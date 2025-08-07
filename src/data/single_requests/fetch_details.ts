@@ -39,7 +39,17 @@ type MainDetails = {
     overview?: string;
     air_date?: string;
     episode_count?: number;
+    episodes?: {
+      id: number;
+      name: string;
+      overview: string;
+      runtime?: number;
+      still_path?: string;
+      air_date?: string;
+      episode_number: number;
+    }[];
   }>;
+
   genres: {
     id: number;
     name: string
@@ -102,12 +112,24 @@ export default async function FetchFullDetails(
       (res) => (res.status === "fulfilled" ? res.value : null)
     );
 
+    const seasonRequests = (main.seasons || []).map((season: any) =>
+      fetchFromTMDB(`/${type}/${id}/season/${season.season_number}`, "&language=ar")
+    );
+
+    const seasonResults = await Promise.allSettled(seasonRequests);
+
+    (main.seasons || []).forEach((season: any, i: any) => {
+      const res = seasonResults[i];
+      if (res.status === "fulfilled") {
+        season.episodes = res.value?.episodes || [];
+      }
+    })
     if (!main) return null;
 
     const mainDetails: MainDetails = {
       ...main,
       backdrop_path: `https://image.tmdb.org/t/p/original${main.backdrop_path}`,
-      backdrop_blur_path: `https://image.tmdb.org/t/p/w92${main.backdrop_path}`,
+      backdrop_blur_path: `https://image.tmdb.org/t/p/w92${main.backdrop_path || main.poster_path}`,
       poster_path: `https://image.tmdb.org/t/p/original${main.poster_path}`,
       type: type === "movie" ? "فيلم" : "مسلسل"
     };

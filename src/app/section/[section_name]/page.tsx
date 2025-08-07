@@ -12,16 +12,17 @@ const validTypes = [
   "latest"
 ];
 const sectionTitles: Record<string, string> = {
-  popular_movies: "الأفلام الرائجة",
-  arabic_movies: "أفلام عربية",
-  turkish_movies: "أفلام تركية",
-  anime_movies: "أفلام أنمي",
-  kr_movies: "أفلام كورية",
-  popular_series: "المسلسلات الرائجة",
-  arabic_series: "مسلسلات عربية",
-  turkish_series: "مسلسلات تركية",
-  anime_series: "مسلسلات أنمي",
-  kr_series: "مسلسلات كورية"
+  "latest": "الأحدث",
+  "popular_movies": "الأفلام الرائجة",
+  "arabic_movies": "أفلام عربية",
+  "turkish_movies": "أفلام تركية",
+  "anime_movies": "أفلام أنمي",
+  "kr_movies": "أفلام كورية",
+  "popular_series": "المسلسلات الرائجة",
+  "arabic_series": "مسلسلات عربية",
+  "turkish_series": "مسلسلات تركية",
+  "anime_series": "مسلسلات أنمي",
+  "kr_series": "مسلسلات كورية"
 };
 
 export default async function SectionPage({ params }: { params: Promise<{ section_name: string }> }) {
@@ -32,7 +33,7 @@ export default async function SectionPage({ params }: { params: Promise<{ sectio
   return (
     <>
       <Navbar />
-      <main className="pt-16 md:pt-24 mx-4 md:mx-8 flex flex-col gap-3 md:gap-6">
+      <main className="pt-16 md:pt-24 mx-4 md:mx-8 flex flex-col gap-3 md:gap-5">
         <div className="px-2 md:px-4 py-2 md:py-4 bg-[#ffffff1a] border-1 rounded-xl">
           <Title className="mb-4">{sectionTitles[section_name]}</Title>
           <SectionList section={section_name} />

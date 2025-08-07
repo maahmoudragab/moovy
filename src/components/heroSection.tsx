@@ -75,12 +75,6 @@ export default function HeroSection({ data }: { data: MediaItem[] }) {
                     {media.title_ar || media.title_en}
                   </Title>
 
-                  {media.overview && (
-                    <p className="text-sm md:text-base text-white/80 text-justify line-clamp-2">
-                      {media.overview}
-                    </p>
-                  )}
-
                   <div className="flex flex-wrap justify-center items-center gap-2 text-sm md:text-base text-white/80">
                     {renderGenres(media.genre_ids)}
                     <span className="w-1 h-5 bg-white/50 rounded-full" />
@@ -89,17 +83,19 @@ export default function HeroSection({ data }: { data: MediaItem[] }) {
                     {media.release_date?.slice(0, 4)}
                   </div>
 
+                  {media.overview && (
+                    <p className="text-sm md:text-base text-white/80 text-justify line-clamp-2">
+                      {media.overview}
+                    </p>
+                  )}
+
                   <Button
-                    className="w-full rounded-full bg-white/10 border backdrop-blur-[1px] hover:bg-white/20 text-white px-6 py-2 text-sm md:text-base transition"
-                    onClick={() => router.push(`/details/${media.type === "فيلم" ? "movie" : "tv"}/${media.id}`)}
-                  >
+                    className="w-full rounded-full bg-white/10 border backdrop-blur-[1px] mt-2 hover:bg-white/20 text-white px-6 py-2 text-sm md:text-base transition"
+                    onClick={() => router.push(`/details/${media.type === "فيلم" ? "movie" : "tv"}/${media.id}`)}>
                     شوف التفاصيل
                   </Button>
                 </div>
               </div>
-
-
-
             </div>
           ))}
         </div>

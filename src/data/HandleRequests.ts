@@ -25,8 +25,10 @@ export default async function HandleRequests(
   try {
     const res = await fetchFromTMDB(path, query);
     if (print) console.log(res.results);
+    
+    const data = res.results || res.cast || [];
 
-    return res.results
+    return data
       .filter((i: { poster_path: string }) => i.poster_path)
       .map((item: any) => ({
         id: item.id,

@@ -27,17 +27,21 @@ import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import EditProfileForm from "@/components/auth/editProfileForm";
 import { Alert, AlertTitle } from "@/components/ui/alert";
 
+// Single Requests
+import FetchByGenres from "@/data/single_requests/fetch_geners";
+import { MediaItem } from "@/data/HandleRequests";
+
 export default function ProfilePage() {
   const router = useRouter();
   const [timer, setTimer] = useState(0);
   const [editOpen, setEditOpen] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
   const [profile, setProfile] = useState<any>(null);
+  const [favGenersData, setFavGenersData] = useState<MediaItem[]>([]);
   const [isSending, setIsSending] = useState(false);
   const [userChecked, setUserChecked] = useState(false);
   const [isEmailVerified, setIsEmailVerified] = useState(false);
   const [logoutConfirmOpen, setLogoutConfirmOpen] = useState(false);
-
   useEffect(() => {
     const lastSent = sessionStorage.getItem("lastVerificationSent");
     if (lastSent) {
@@ -104,13 +108,16 @@ export default function ProfilePage() {
         router.replace("/auth/complete-profile");
         return;
       }
+
+      const GenersData = (await FetchByGenres(data.favoriteGenres)).slice(0, 15);
+
+      setFavGenersData(GenersData);
       setProfile(data);
       setUserChecked(true);
     };
 
     fetchProfile();
   }, [router]);
-
   if (!userChecked) return <Loading />;
 
   const handleLogout = async () => {
@@ -129,10 +136,18 @@ export default function ProfilePage() {
     <>
       <Navbar />
 
-      <main className="min-h-screen w-full pt-16 md:pt-28 px-4 md:px-8 py-8 relative z-10">
-        <div className={`w-full fixed bottom-17 md:bottom-7 right-1/2 translate-x-1/2 z-45 transition-all duration-500
-          ${showAlert ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5 pointer-events-none"}`}>
-          <Alert variant="default" className="w-fit mx-auto shadow-lg overflow-hidden flex items-center gap-2">
+      <main className="min-h-screen w-full pt-16 md:pt-28 px-4 md:px-8 relative z-10">
+        <div
+          className={`w-full fixed bottom-17 md:bottom-7 right-1/2 translate-x-1/2 z-45 transition-all duration-500
+          ${showAlert
+              ? "opacity-100 translate-y-0"
+              : "opacity-0 translate-y-5 pointer-events-none"
+            }`}
+        >
+          <Alert
+            variant="default"
+            className="w-fit mx-auto shadow-lg overflow-hidden flex items-center gap-2"
+          >
             <CheckCircle />
             <AlertTitle className="text-foreground w-full">
               تم إرسال رابط التفعيل إلى إيميلك
@@ -149,7 +164,10 @@ export default function ProfilePage() {
             priority
             className="object-cover saturate-200"
           />
-          <div className="absolute inset-0 bg-black/60" style={{ backdropFilter: "blur(200px)" }} />
+          <div
+            className="absolute inset-0 bg-black/40"
+            style={{ backdropFilter: "blur(200px)" }}
+          />
         </div>
 
         <div className="flex flex-col md:flex-row gap-6 pb-8 items-center md:items-stretch">
@@ -166,7 +184,10 @@ export default function ProfilePage() {
             <Title>بيانات الحساب</Title>
 
             <div className="flex gap-2">
-              <Button onClick={() => setEditOpen(true)} className="flex-1 rounded-xl">
+              <Button
+                onClick={() => setEditOpen(true)}
+                className="flex-1 rounded-xl"
+              >
                 تعديل بياناتي
               </Button>
               <Button
@@ -199,7 +220,9 @@ export default function ProfilePage() {
                         onClick={handleSendVerification}
                         disabled={isSending || timer > 0}
                       >
-                        {timer > 0 ? `إعادة الإرسال خلال ${timer}ث` : "تفعيل الإيميل"}
+                        {timer > 0
+                          ? `إعادة الإرسال خلال ${timer}ث`
+                          : "تفعيل الإيميل"}
                       </Button>
                     </div>
                   )
@@ -217,9 +240,17 @@ export default function ProfilePage() {
           </div>
         </div>
 
-        {profile.favorites && profile.favorites.length >= 1 ? (
-          <SectionSlider title="قائمة المفضلة" data={profile.favorites} />
-        ) : ''}
+        <div className="flex flex-col gap-3 md:gap-5">
+          {profile.recent_views && profile.recent_views.length >= 1 && (
+            <SectionSlider title="السجل" data={profile.recent_views}/>
+          )}
+          {profile.favorites && profile.favorites.length >= 1 && (
+            <SectionSlider title="قائمة المفضلة" data={profile.favorites}/>
+          )}
+          {favGenersData && (
+            <SectionSlider title="الأقتراحات" data={favGenersData}/>
+          )}
+        </div>
       </main>
 
       <Dialog open={editOpen} onOpenChange={setEditOpen}>

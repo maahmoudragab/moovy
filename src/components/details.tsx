@@ -7,7 +7,17 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 // ✅ External Libraries
-import { ChevronLeft, Heart, Play, CheckCircle } from "lucide-react";
+import {
+  ChevronLeft, CalendarDays,
+  Clock,
+  Film,
+  Languages,
+  Star,
+  Quote,
+  Layers,
+  FolderKanban,
+  LayoutList, Heart, Play, CheckCircle
+} from "lucide-react";
 import useEmblaCarousel from "embla-carousel-react";
 
 // ✅ App Components
@@ -16,6 +26,14 @@ import SectionSlider from "@/components/shared/sectionSlider";
 import PaginatedSection from "@/components/shared/paginatedSection";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertTitle } from "@/components/ui/alert";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
 
 // ✅ Utilities & Types
 import getLanguageName from "@/data/local_functions/lang";
@@ -26,19 +44,25 @@ import {
   addToFavorites,
   removeFromFavorites,
   checkIsFavorite,
+  addToRecentViews,
 } from "@/firebase/databaseActios";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { MediaItem } from "@/data/HandleRequests";
+import Title from "./ui/title";
 
 //#region 🔹 Info Sub Components
 const InfoRow = ({
   label,
   value,
+  icon: Icon,
 }: {
   label: string;
   value: string | number | React.ReactNode;
+  icon?: React.FC<{ size?: number; className?: string }>;
 }) => (
+
   <li className="flex border-b border-white/10 p-1.5 w-full xl:w-1/2">
+    {Icon && <Icon size={18} className="text-white/90 mt-1 ml-2" />}
     <span className="text-white/90">{label}&nbsp;:&nbsp;</span>
     <span className="text-white/80">{value}</span>
   </li>
@@ -47,44 +71,62 @@ const InfoRow = ({
 const InfoHeader = ({ main }: { main: FullDetailsType["main"] }) => (
   <div className="space-y-2 md:space-y-3">
     <ul className="text-sm md:text-base text-white/90 space-y-1" dir="rtl">
-      <InfoRow label="النوع" value={main.type} />
-      <InfoRow label="اللغة" value={getLanguageName(main.original_language)} />
-      {main.tagline && <InfoRow label="الاقتباس" value={main.tagline} />}
-      <InfoRow label="التقييم" value={main.vote_average} />
+      <InfoRow label="النوع" value={main.type} icon={Film} />
+      <InfoRow
+        label="اللغة"
+        value={getLanguageName(main.original_language)}
+        icon={Languages}
+      />
+      {main.tagline && <InfoRow label="الاقتباس" value={main.tagline} icon={Quote} />}
+      <InfoRow label="التقييم" value={main.vote_average} icon={Star} />
       {main.runtime && (
-        <InfoRow label="المدة" value={`${main.runtime} دقيقة`} />
+        <InfoRow
+          label="المدة"
+          value={`${main.runtime} دقيقة`}
+          icon={Clock}
+        />
       )}
       {main.number_of_seasons && (
-        <InfoRow label="عدد المواسم" value={main.number_of_seasons} />
+        <InfoRow
+          label="عدد المواسم"
+          value={main.number_of_seasons}
+          icon={Layers}
+        />
       )}
       {main.belongs_to_collection && (
         <InfoRow
           label="يتبع الى"
           value={main.belongs_to_collection.name || "غير محدد"}
+          icon={FolderKanban}
         />
       )}
       <InfoRow
         label="تاريخ الإصدار"
-        value={main.type === "فيلم" ? main.release_date : main.first_air_date}
+        value={
+          main.type === "فيلم" ? main.release_date : main.first_air_date
+        }
+        icon={CalendarDays}
       />
       {main.genres?.length > 0 && (
         <InfoRow
           label="التصنيفات"
+          icon={LayoutList}
           value={
-            <div className="flex flex-wrap items-center gap-1">
+            <span className="flex flex-wrap items-center gap-1">
               {main.genres.map((g, i, arr) => (
                 <React.Fragment key={g.id}>
                   <span>{g.name}</span>
                   {i < arr.length - 1 && (
-                    <span className="w-1 h-1 rounded-full bg-white mx-1 inline-block" />
+                    <span className="w-2 h-2 rounded-full bg-white/60 mx-1 inline-block" />
                   )}
                 </React.Fragment>
               ))}
-            </div>
+            </span>
           }
         />
       )}
     </ul>
+
   </div>
 );
 //#endregion
@@ -101,7 +143,9 @@ export default function DetailsContent({ item }: { item: FullDetailsType }) {
   const [showAlert, setShowAlert] = useState(false);
   const [user, setUser] = useState<any>(null);
   const [playedVideo, setPlayedVideo] = useState<string | null>(null);
-
+  const [selectedSeason, setSelectedSeason] = useState(
+    main.seasons?.find((s) => s.season_number === 1) || main.seasons?.[0]
+  );
   const router = useRouter();
   const [emblaRefCast] = useEmblaCarousel({
     loop: false,
@@ -133,6 +177,18 @@ export default function DetailsContent({ item }: { item: FullDetailsType }) {
   const visibleReviews = reviews.slice(
     (currentReviewPage - 1) * reviewsPerPage,
     currentReviewPage * reviewsPerPage
+  );
+
+  const [currentEpisodePage, setCurrentEpisodePage] = useState(1);
+  const EPISODES_PER_PAGE = 4;
+
+  const totalEpisodePages = Math.ceil(
+    (selectedSeason?.episodes?.length || 0) / EPISODES_PER_PAGE
+  );
+
+  const visibleEpisodes = selectedSeason?.episodes?.slice(
+    (currentEpisodePage - 1) * EPISODES_PER_PAGE,
+    currentEpisodePage * EPISODES_PER_PAGE
   );
 
   // 🔹 Favorite Toggle
@@ -183,15 +239,32 @@ export default function DetailsContent({ item }: { item: FullDetailsType }) {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
         setUser(user);
-        const isFav = await checkIsFavorite(user.uid, main.id);
+
+        const item: MediaItem = {
+          id: main.id,
+          title_ar: [main.title_ar, main.title, main.original_title, main.name].find(v => typeof v === "string") || "",
+          title_en: [main.original_title, main.name].find(v => typeof v === "string") || "",
+          original_language: main.original_language || "",
+          overview: main.overview || "",
+          genre_ids: (main.genres || []).map((g) => g.name),
+          backdrop_path: main.backdrop_path || "",
+          poster_path: main.poster_path || "",
+          release_date: main.release_date || main.first_air_date || "",
+          type: main.type,
+          vote_average: main.vote_average || 0,
+        };
+
+        const isFav = await checkIsFavorite(user.uid, item.id);
         setIsFavorite(isFav);
+
+        await addToRecentViews(user.uid, item);
       } else {
         setUser(null);
       }
       setIsLoading(false);
     });
     return () => unsubscribe();
-  }, [main.id]);
+  }, [main]);
 
   return (
     <>
@@ -211,13 +284,12 @@ export default function DetailsContent({ item }: { item: FullDetailsType }) {
         <div className="absolute inset-0 -z-10">
           {(media.images?.[0]?.file_path || main.backdrop_blur_path) && (
             <Image
-              src={`https://image.tmdb.org/t/p/w500${media.images?.[0]?.file_path || main.backdrop_blur_path
-                }`}
+              src={main.backdrop_blur_path || media.images?.[0]?.file_path || ''}
               alt={main.name || main.title || "صورة"}
               fill
               sizes="100vw"
               priority
-              className="object-cover saturate-400"
+              className="object-cover saturate-200"
             />
           )}
           <div className="absolute inset-0 bg-black/60 backdrop-blur-3xl" />
@@ -225,10 +297,8 @@ export default function DetailsContent({ item }: { item: FullDetailsType }) {
 
         {/* 🔹 Info Section */}
         <section className="relative pt-16 md:pt-28 px-4 md:px-8 py-8 flex flex-col gap-6">
-          <div
-            className="absolute inset-0 -z-10 bg-top bg-cover mask-b-from-0"
-            style={{ backgroundImage: `url(${main.backdrop_path})` }}
-          ></div>
+          <div className="absolute inset-0 brightness-70 -z-10 bg-top bg-cover mask-b-from-50%"
+            style={{ backgroundImage: `url(${main.backdrop_path})` }}></div>
 
           <div className="flex flex-col md:flex-row gap-6 justify-between">
             {/* Poster */}
@@ -257,10 +327,7 @@ export default function DetailsContent({ item }: { item: FullDetailsType }) {
                   }`}
               </h1>
 
-              <p
-                className="text-sm md:text-base text-white/90 leading-relaxed w-full xl:w-1/2 text-justify"
-                dir="rtl"
-              >
+              <p className="text-sm md:text-base text-white/90 leading-relaxed w-full xl:w-1/2 text-justify">
                 {main.overview || "لا يوجد وصف متاح لهذا العمل."}
               </p>
 
@@ -298,51 +365,16 @@ export default function DetailsContent({ item }: { item: FullDetailsType }) {
 
         <div className="mx-4 md:mx-8 flex flex-col gap-3 md:gap-5">
 
-          {/* المواسم */}
-          {main.seasons && main.seasons.length > 0 && (
-            <section>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 md:gap-3">
-                {main.seasons.map((season) => (
-                  <div
-                    key={season.id}
-                    className="border border-white/10 bg-white/5 rounded-xl px-2 md:px-4 py-2 md:py-4 flex flex-col gap-2 "
-                  >
-                    <h3 className="text-lg font-semibold">
-                      {season.season_number === 0
-                        ? "العروض الخاصة"
-                        : `الموسم ${season.season_number}`}
-                    </h3>
-                    <p className="text-sm text-white/80 line-clamp-3">
-                      {season.overview || "لا يوجد وصف متاح لهذا الموسم."}
-                    </p>
-                    <span className="text-xs text-white/60">
-                      تاريخ الإصدار : {season.air_date || "غير متوفر"}
-                    </span>
-                    <div className="flex justify-between items-center mt-auto">
-                      <span className="text-xs text-primary">
-                        عدد الحلقات : {season.episode_count || "غير متوفر"}
-                      </span>
-                      <div className="flex items-center cursor-pointer text-primary/80 hover:text-primary hover:underline">
-                        <span className="text-xs">روح للتفاصيل</span>
-                        <ChevronLeft className="w-4 h-4" />
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </section>
-          )}
-
           {/* الكاست */}
           {media.cast && media.cast.length >= 2 && (
-            <section className="overflow-hidden" ref={emblaRefCast}>
+            <section className="overflow-hidden md:mask-l-from-95%" ref={emblaRefCast}>
               <div className="flex gap-2 md:gap-3">
                 {media.cast
                   .filter((a) => a.profile_path)
                   .map((actor) => (
                     <Link
                       key={actor.id}
-                      href={`/artist/${actor.id}`}
+                      href={`/details/artist/${actor.id}`}
                       className="relative border border-white/10 bg-white/5 flex-shrink-0  rounded-xl px-3 md:px-5 py-3 md:py-5 w-[140px] sm:w-[160px] flex flex-col items-center text-center gap-2 transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/50"
                     >
                       <div className="relative aspect-square w-full rounded-full overflow-hidden border-2 border-white/20  transition-colors duration-300">
@@ -376,6 +408,123 @@ export default function DetailsContent({ item }: { item: FullDetailsType }) {
             </section>
           )}
 
+          {/* المواسم */}
+          {main.seasons && main.seasons.length > 0 && (
+            <section className="w-full flex flex-col gap-3 md:gap-5 ">
+
+              {/* ✅ هيدر + اختيار الموسم */}
+              <div className="flex items-center justify-between gap-2">
+                <Title>المواسم</Title>
+
+                <div className="w-[140px] md:w-72">
+                  <Select
+                    value={selectedSeason?.id?.toString()}
+                    onValueChange={(value) => {
+                      const season = main.seasons?.find((s) => s.id === Number(value));
+                      setSelectedSeason(season);
+                    }}
+                    dir="rtl"
+
+                  >
+                    <SelectTrigger className="bg-white/10 border-white/20 text-white w-full">
+                      <SelectValue placeholder="اختر الموسم" />
+                    </SelectTrigger>
+
+                    <SelectContent className="bg-white/10 text-white backdrop-blur-md">
+                      {main.seasons.map((season) => (
+                        <SelectItem key={season.id} value={season.id.toString()} >
+                          {season.season_number === 0
+                            ? "العروض الخاصة"
+                            : `الموسم ${season.season_number}`}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+              </div>
+
+              {/* ✅ تفاصيل الموسم */}
+              {selectedSeason && (
+                <>
+                  {/* ✅ تفاصيل الموسم */}
+                  <div className="border rounded-xl px-2 md:px-4 py-2 bg-[#ffffff1a] ">
+                    <Title className="mb-4">
+                      {selectedSeason.season_number === 0
+                        ? "العروض الخاصة"
+                        : `الموسم ${selectedSeason.season_number}`}
+                    </Title>
+
+                    <p className="text-sm text-white/80 mb-1">
+                      {selectedSeason.overview || "لا يوجد وصف متاح لهذا الموسم."}
+                    </p>
+
+                    <p className="text-sm text-white/80">
+                      تاريخ الإصدار : {selectedSeason.air_date || "غير متوفر"}
+                    </p>
+                  </div>
+
+                  {/* ✅ الحلقات */}
+                  {selectedSeason.episodes && selectedSeason.episodes.length > 0 && (
+                    <PaginatedSection
+                      title={`الحلقات : ${selectedSeason.episode_count ||
+                        selectedSeason.episodes?.length ||
+                        "غير متوفر"
+                        }`}
+                      totalPages={totalEpisodePages}
+                      currentPage={currentEpisodePage}
+                      setCurrentPage={setCurrentEpisodePage}
+                    >
+                      {visibleEpisodes?.map((ep) => (
+                        <div
+                          key={ep.id}
+                          className="rounded-lg overflow-hidden border border-white/10 bg-white/5"
+                        >
+                          {/* صورة الحلقة */}
+                          <div className="relative w-full aspect-video">
+                            {ep.still_path ? (
+                              <Image
+                                src={`https://image.tmdb.org/t/p/w1280${ep.still_path}`}
+                                alt={ep.name}
+                                fill
+                                unoptimized
+                                className="object-cover"
+                              />
+                            ) : (
+                              <div className="w-full h-full bg-white/10 flex items-center justify-center text-white/50 text-sm">
+                                لا توجد صورة
+                              </div>
+                            )}
+
+                            {/* مدة الحلقة */}
+                            {ep.runtime && (
+                              <div className="absolute bottom-2 left-2 bg-black/60 text-white text-xs px-2 py-0.5 rounded">
+                                {ep.runtime} د
+                              </div>
+                            )}
+                          </div>
+
+                          {/* بيانات الحلقة */}
+                          <div className="p-3 flex flex-col gap-1 text-white">
+                            <h4 className="text-sm font-bold">
+                              الحلقة {ep.episode_number}: {ep.name}
+                            </h4>
+                            <p className="text-xs text-white/70 line-clamp-3">
+                              {ep.overview || "لا يوجد وصف"}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+                    </PaginatedSection>
+                  )}
+                </>
+              )}
+
+            </section>
+          )}
+
+
+
           {/* صور العمل */}
           {media.images && media.images.length > 2 && (
             <PaginatedSection
@@ -394,7 +543,7 @@ export default function DetailsContent({ item }: { item: FullDetailsType }) {
                     alt={`image-${index}`}
                     width={0}
                     height={0}
-                    className="object-cover w-full "
+                    className="object-cover w-full"
                     unoptimized
                   />
                 </div>
@@ -438,7 +587,7 @@ export default function DetailsContent({ item }: { item: FullDetailsType }) {
                           unoptimized
                           className="object-cover"
                         />
-                          <Play className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 bg-black/50 p-2 rounded-full box-content  text-white/80" />
+                        <Play className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 bg-black/50 p-2 rounded-full box-content  text-white/80" />
                       </div>
                     )}
 
@@ -502,10 +651,10 @@ export default function DetailsContent({ item }: { item: FullDetailsType }) {
 
           {/* الاقتراحات */}
           {recommendation.length > 2 && (
-              <SectionSlider
-                title="الأقتراحات"
-                data={recommendation.slice(0, 12)}
-              />
+            <SectionSlider
+              title="الأقتراحات"
+              data={recommendation.slice(0, 12)}
+            />
           )}
         </div>
       </main>
