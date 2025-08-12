@@ -212,7 +212,7 @@ export default function Navbar({ queryS }: { queryS?: string }) {
         </div>
         <ul className="flex items-center gap-5">{renderDesktopLinks()}</ul>
         <Image
-          src="/images/moovy.webp"
+          src="/images/moovy.png"
           alt="logo"
           width={80}
           height={80}
@@ -226,7 +226,7 @@ export default function Navbar({ queryS }: { queryS?: string }) {
       {/* Mobile Top Navbar */}
       <header className="md:hidden fixed w-full px-2 h-13 bg-gradient-to-b from-black/80 to-transparent rounded-b-xl flex items-center justify-between z-50">
         <Image
-          src="/images/moovy.webp"
+          src="/images/moovy.png"
           alt="logo"
           width={60}
           height={60}

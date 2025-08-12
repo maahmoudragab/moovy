@@ -14,10 +14,8 @@ const alexandria = Alexandria({
 
 export const metadata: Metadata = {
   title: "Moovy - موسوعة الأفلام والمسلسلات بالعربي",
-  // العنوان اللي هيظهر في تبويب المتصفح وفي نتائج البحث
 
   description: "Moovy هو موسوعة شاملة بتعرض تفاصيل دقيقة عن الأفلام والمسلسلات، من مواعيد العرض، التصنيفات، التقييمات، والملخصات بالعربي.",
-  // وصف الصفحة اللي بيظهر تحت العنوان في نتائج جوجل
 
   keywords: [
     "Moovy",
@@ -64,17 +62,11 @@ export const metadata: Metadata = {
     "قائمة أفلام عربية",
     "قائمة مسلسلات عربية",
   ],
-  // الكلمات المفتاحية اللي بتساعد محركات البحث تفهم محتوى الصفحة
-
 
   creator: "Mahmoud Ragab",
-  // اسم منشئ المحتوى (غالبًا الفريق أو الشخص المسؤول)
-
   publisher: "Mahmoud Ragab",
-  // الناشر الرسمي للموقع أو المحتوى
 
-  metadataBase: new URL("https://moovy.vercel.app"),
-  // الرابط الأساسي للموقع لتكوين روابط كاملة لو استخدمت روابط نسبية
+  metadataBase: new URL("https://moovy-hub.vercel.app"),
 
   robots: {
     index: true,  // يسمح لمحركات البحث بأرشفة الصفحة
@@ -93,76 +85,49 @@ export const metadata: Metadata = {
 
   openGraph: {
     title: "Moovy - موسوعة الأفلام والمسلسلات بالعربي",
-    // عنوان صفحة الـ Open Graph (بيظهر لما تشارك الرابط على السوشيال)
 
     description: "تعرف على تفاصيل دقيقة عن الأفلام والمسلسلات من ملخصات، تصنيفات، تقييمات، مواعيد عرض، وأكثر بالعربي.",
-    // وصف صفحة الـ Open Graph
 
-    url: "https://moovy.vercel.app",
-    // رابط الصفحة (عادة الصفحة الرئيسية)
+    url: "https://moovy-hub.vercel.app",
 
     siteName: "Moovy",
-    // اسم الموقع أو العلامة التجارية
 
     images: [
       {
-        url: "/images/moovy.webp",
-        // رابط صورة الـ OG اللي بتظهر على فيسبوك وتويتر
+        url: "/images/moovy.png",
 
-        width: 1280,  // عرض الصورة بالبكسل
-        height: 1280,  // ارتفاع الصورة بالبكسل
+        width: 1280,
+        height: 1280,
         alt: "Moovy - موسوعة الأفلام والمسلسلات",
-        // نص بديل للصورة لو ما اتحملتشي
-
-        type: "image/jpeg",
-        // نوع الصورة (JPEG أو PNG أو غيرها)
+        type: "image/webp",
       }
     ],
 
     locale: "ar_AR",
-    // اللغة والمنطقة (العربية - مصر)
 
     type: "website",
-    // نوع الـ Open Graph (موقع ويب هنا)
   },
 
   twitter: {
     card: "summary_large_image",
-    // نوع الكارت على تويتر (صورة كبيرة مع ملخص)
 
     title: "Moovy - موسوعة الأفلام والمسلسلات بالعربي",
-    // عنوان الكارت على تويتر
 
     description: "تعرف على تفاصيل دقيقة عن الأفلام والمسلسلات من ملخصات، تصنيفات، تقييمات، مواعيد عرض، وأكثر بالعربي.",
-    // وصف الكارت على تويتر
 
-    images: ["https://moovy.example.com/og-image.jpg"],
-    // صورة الكارت على تويتر
+    images: ["https://moovy-hub.vercel.app/"],
 
-    creator: "@MoovyOfficial",
-    // حساب تويتر الخاص بالموقع أو المنشئ
+    creator: "@maahmoudragab",
   },
 
   verification: {
-    google: "كود_التحقق_من_جوجل_لو_عندك",
-    // كود التحقق من ملكية الموقع في جوجل سيرش كونسول
-
-    yandex: "كود_التحقق_من_يانديكس_لو_عندك",
-    // كود التحقق في محرك البحث ياندكس لو بتستخدمه
+    google: "", // task
   },
-
-  viewport: "width=device-width, initial-scale=1",
-  // عشان الصفحة تكون متوافقة مع جميع الشاشات والموبايلات
 
   formatDetection: {
     email: false,
-    // تمنع المتصفح من تحويل الإيميلات إلى لينكات تلقائية
-
     address: false,
-    // تمنع المتصفح من تحويل العناوين إلى روابط
-
     telephone: false,
-    // تمنع المتصفح من تحويل أرقام التليفون إلى روابط اتصال
   },
 };
 

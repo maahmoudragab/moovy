@@ -83,14 +83,14 @@ export default function Artist({ data }: { data: ArtistFullInfo }) {
         {/* Open Graph */}
         <meta property="og:title" content={data.artist.name || "تفاصيل الفنان - Moovy"} />
         <meta property="og:description" content={data.artist.biography || "تعرف على تفاصيل الفنان وأعماله"} />
-        <meta property="og:url" content="https://moovy.vercel.app" />
+        <meta property="og:url" content="https://moovy-hub.vercel.app" />
         <meta property="og:site_name" content="Moovy" />
         <meta
           property="og:image"
           content={
             data.artist.profile_path
               ? `https://image.tmdb.org/t/p/original${data.artist.profile_path}`
-              : "https://moovy.vercel.app/images/moovy.webp"
+              : "https://moovy.vercel.app/images/moovy.png"
           }
         />
         <meta property="og:image:alt" content={data.artist.name || "صورة الفنان"} />
@@ -106,7 +106,7 @@ export default function Artist({ data }: { data: ArtistFullInfo }) {
           content={
             data.artist.profile_path
               ? `https://image.tmdb.org/t/p/original${data.artist.profile_path}`
-              : "https://moovy.vercel.app/images/moovy.webp"
+              : "https://moovy.vercel.app/images/moovy.png"
           }
         />
         <meta name="twitter:creator" content="@MoovyOfficial" />

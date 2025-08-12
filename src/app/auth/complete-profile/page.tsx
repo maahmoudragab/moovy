@@ -56,7 +56,7 @@ export default function SignupPage() {
             </p>
           </div>
           <Image
-            src="/images/moovy.webp"
+            src="/images/moovy.png"
             alt="Moovy Logo"
             width={100}
             height={100}

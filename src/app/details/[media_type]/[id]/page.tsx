@@ -29,8 +29,7 @@ export default async function MediaDetailsPage({ params }: { params: Promise<{ i
             "Moovy هو موسوعة شاملة بتعرض تفاصيل دقيقة عن الأفلام والمسلسلات، من مواعيد العرض، التصنيفات، التقييمات، والملخصات بالعربي."
           }
         />
-        <meta
-          name="keywords"
+        <meta name="keywords"
           content={[
             data?.main?.title,
             data?.main?.name,
@@ -81,18 +80,16 @@ export default async function MediaDetailsPage({ params }: { params: Promise<{ i
             ...(data?.main?.genres?.map((g: any) => g.name) || []),
           ]
             .filter(Boolean)
-            .join(", ")}
-        />
+            .join(", ")} />
         <meta httpEquiv="Content-Language" content="ar" />
 
         {/* Open Graph */}
         <meta property="og:title" content={data?.main?.name || data?.main?.title || "Moovy - موسوعة الأفلام والمسلسلات"} />
         <meta property="og:description" content={data?.main?.overview || "Moovy هو موسوعة شاملة بتعرض تفاصيل دقيقة عن الأفلام والمسلسلات"} />
-        <meta property="og:url" content="https://moovy.vercel.app" />
+        <meta property="og:url" content="https://moovy-hub.vercel.app" />
         <meta property="og:site_name" content="Moovy" />
-        <meta
-          property="og:image"
-          content={`https://image.tmdb.org/t/p/original${data?.main?.backdrop_path || data?.main?.poster_path || "/default-image.jpg"}`}
+        <meta property="og:image"
+          content={`https://image.tmdb.org/t/p/w780${data?.main?.backdrop_path || data?.main?.poster_path}`}
         />
         <meta property="og:image:alt" content="Moovy - موسوعة الأفلام والمسلسلات" />
         <meta property="og:type" content="website" />
@@ -104,7 +101,7 @@ export default async function MediaDetailsPage({ params }: { params: Promise<{ i
         <meta name="twitter:description" content={data?.main?.overview || "Moovy هو موسوعة شاملة بتعرض تفاصيل دقيقة عن الأفلام والمسلسلات"} />
         <meta
           name="twitter:image"
-          content={`https://image.tmdb.org/t/p/original${data?.main?.backdrop_path || data?.main?.poster_path || "/default-image.jpg"}`}
+          content={`https://image.tmdb.org/t/p/w780${data?.main?.backdrop_path || data?.main?.poster_path}`}
         />
         <meta name="twitter:creator" content="@MoovyOfficial" />
 
@@ -123,7 +120,7 @@ export default async function MediaDetailsPage({ params }: { params: Promise<{ i
               "@type": data?.main.media_type === "movie" ? "Movie" : "TVSeries",
               name: data?.main?.title || data?.main?.name,
               description: data?.main?.overview,
-              image: `https://image.tmdb.org/t/p/original${data?.main?.poster_path || data?.main?.backdrop_path}`,
+              image: `https://image.tmdb.org/t/p/w780${data?.main?.poster_path || data?.main?.backdrop_path}`,
               datePublished: data?.main?.release_date || data?.main?.first_air_date,
               genre: data?.main?.genres?.map((g: any) => g.name),
               aggregateRating: {
