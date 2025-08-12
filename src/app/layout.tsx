@@ -69,19 +69,19 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://moovy-hub.vercel.app"),
 
   robots: {
-    index: true,  // يسمح لمحركات البحث بأرشفة الصفحة
-    follow: true, // يسمح لهم بمتابعة الروابط داخل الصفحة
-    nocache: false, // يسمح بتخزين الصفحة مؤقتًا في الكاش
+    index: true,
+    follow: true,
+    nocache: false,
     googleBot: {
-      index: true, // لجوجل يسمح بأرشفة الصفحة
-      follow: true, // يسمح لجوجل بمتابعة الروابط
-      noimageindex: false, // يسمح لجوجل بأرشفة الصور
-      "max-video-preview": -1, // يسمح بمعاينة الفيديوهات بلا حدود
-      "max-image-preview": "large", // يسمح بمعاينة صور كبيرة في نتائج البحث
-      "max-snippet": -1, // يسمح بعرض مقتطفات كبيرة من النص في نتائج البحث
+      index: true,
+      follow: true,
+      noimageindex: false,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
     },
   },
-  // تعليمات لمحركات البحث عن كيفية التعامل مع الصفحة
+
 
   openGraph: {
     title: "Moovy - موسوعة الأفلام والمسلسلات بالعربي",
@@ -121,7 +121,11 @@ export const metadata: Metadata = {
   },
 
   verification: {
-    google: "", // task
+    google: "HJcQ06N13ZmafDcTz4ph34ghIvb37tCX9mqz9-zUcEk",
+  },
+
+  other: {
+    "google-site-verification": "HJcQ06N13ZmafDcTz4ph34ghIvb37tCX9mqz9-zUcEk"
   },
 
   formatDetection: {
