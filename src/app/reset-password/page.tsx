@@ -13,6 +13,7 @@ import { resetPassword } from "@/firebase/authActions"
 // UI Components
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
+import Footer from "@/components/shared/footer";
 
 
 const schema = z.object({
@@ -46,13 +47,24 @@ export default function ResetPasswordPage() {
   };
 
   return (
-    <div>
-    <form onSubmit= { handleSubmit(onSubmit) } className = "space-y-4 w-full max-w-sm mx-auto mt-10" >
-      <Input type="email" placeholder = "الإيميل" {...register('email') } />
-  { errors.email && <p className="text-red-500 text-sm" > { errors.email.message } </p> }
-  { message && <p className="text-sm text-blue-600" > { message } </p> }
-  <Button type="submit" className = "w-full" > ابعت لينك إعادة تعيين </Button>
-    </form>
+    <div className="min-h-screen flex flex-col">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="flex-1 space-y-4 w-full max-w-sm mx-auto mt-10"
+      >
+        <Input type="email" placeholder="الإيميل" {...register('email')} />
+        {errors.email && (
+          <p className="text-red-500 text-sm">{errors.email.message}</p>
+        )}
+        {message && (
+          <p className="text-sm text-blue-600">{message}</p>
+        )}
+        <Button type="submit" className="w-full">
+          ابعت لينك إعادة تعيين
+        </Button>
+      </form>
+      <Footer />
     </div>
   );
+
 }

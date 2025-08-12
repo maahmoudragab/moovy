@@ -9,6 +9,7 @@ import DetailsContent from "@/components/details/DetailsContent";
 import Navbar from "@/components/shared/navbar";
 import ToastComponent from "@/components/shared/ToastComponent";
 import Head from "next/head";
+import Footer from "@/components/shared/footer";
 
 export default async function MediaDetailsPage({ params }: { params: Promise<{ id: string; media_type: string }> }) {
 
@@ -112,8 +113,7 @@ export default async function MediaDetailsPage({ params }: { params: Promise<{ i
         <meta name="theme-color" content="#000000" />
 
         {/* Structured data JSON-LD */}
-        <script
-          type="application/ld+json"
+        <script type="application/ld+json"
           dangerouslySetInnerHTML={{
             __html: JSON.stringify({
               "@context": "https://schema.org",
@@ -129,13 +129,13 @@ export default async function MediaDetailsPage({ params }: { params: Promise<{ i
                 ratingCount: data?.main?.vote_count || 0,
               },
             }),
-          }}
-        />
+          }} />
       </Head>
 
       <Navbar />
       <ToastComponent />
       <DetailsContent item={data!} />;
+
     </>
   )
 }

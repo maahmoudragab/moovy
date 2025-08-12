@@ -1,7 +1,9 @@
+
 // Components
 import Navbar from "@/components/shared/navbar";
 import HeroSection from "@/components/heroSection";
 import SectionSlider from "@/components/shared/sectionSlider";
+import Footer from "@/components/shared/footer";
 
 // Single Requests
 import FetchTrending from "@/data/single_requests/fetch_trending";
@@ -27,13 +29,12 @@ export default async function Home() {
   const [hero_data, popular_movies, arabic_movies, turkish_movies, anime_movies, kr_movie,
     popular_series, arabic_series, turkish_series, anime_series, kr_series, upcoming,]
     = (await Promise.all([(await FetchTrending()).slice(0, 9), FetchPopularMovies(), FetchArabicMovies(), FetchPopularTurkishMovies(), FetchAnimeMovie(), FetchKrMovies(),
-    FetchPopularSeries(), FetchArabicSeries(), FetchPopularTurkishSeries(), FetchAnimeSeries(), FetchKrSeries(), FetchUpcoming()])).map((arr) => arr.slice(0, 12));
+    FetchPopularSeries(), FetchArabicSeries(), FetchPopularTurkishSeries(), FetchAnimeSeries(), FetchKrSeries(), FetchUpcoming()])).map((arr) => arr.slice(0, 14));
 
   return (
     <main className="flex flex-col gap-5 md:gap-2">
       <Navbar />
       <ScrollSmoothWrapper>
-
         <HeroSection data={hero_data} />
         <div className="mx-4 md:mx-8 flex flex-col gap-3 md:gap-5">
           <SectionSlider path="popular_movies" title="الأفلام الرائجة" data={popular_movies} />
@@ -58,6 +59,8 @@ export default async function Home() {
 
           <SectionSlider title="الأعمال القادمة" data={upcoming} />
         </div>
+        <Footer />
+
       </ScrollSmoothWrapper>
     </main>
   );

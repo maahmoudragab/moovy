@@ -7,7 +7,7 @@ import SectionList from "@/components/shared/sectionList";
 import Title from "@/components/ui/title";
 
 import ScrollSmoothWrapper from "@/components/ScrollSmoothWrapper";
-
+import Footer from "@/components/shared/footer";
 const validTypes = [
   "kr_movies", "popular_movies", "arabic_movies", "turkish_movies", "anime_movies",
   "kr_series", "popular_series", "arabic_series", "turkish_series", "anime_series",
@@ -36,12 +36,15 @@ export default async function SectionPage({ params }: { params: Promise<{ sectio
     <>
       <Navbar />
       <ScrollSmoothWrapper>
-        <main className="pt-16 md:pt-24 mx-4 md:mx-8 flex flex-col gap-3 md:gap-5">
-          <div className="px-2 md:px-4 py-2 md:py-4 bg-[#ffffff1a] border-1 rounded-xl">
-            <Title className="mb-4">{sectionTitles[section_name]}</Title>
-            <SectionList section={section_name} />
-          </div>
-        </main>
+        <div className="min-h-screen flex flex-col">
+          <main className="flex-1 pt-16 md:pt-24 mx-4 md:mx-8 flex flex-col gap-3 md:gap-5">
+            <div className="px-2 md:px-4 py-2 md:py-4 bg-[#ffffff1a] border-1 rounded-xl">
+              <Title className="mb-4">{sectionTitles[section_name]}</Title>
+              <SectionList section={section_name} />
+            </div>
+          </main>
+          <Footer />
+        </div>
       </ScrollSmoothWrapper>
     </>
   );
