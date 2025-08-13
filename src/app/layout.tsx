@@ -91,15 +91,14 @@ export const metadata: Metadata = {
     url: "https://moovy-hub.vercel.app",
 
     siteName: "Moovy",
+    applicationName: "Moovy",
 
     images: [
       {
         url: "/images/moovy.png",
-
-        width: 1280,
-        height: 1280,
-        alt: "Moovy - موسوعة الأفلام والمسلسلات",
-        type: "image/webp",
+        width: 780,
+        height: 780,
+        alt: "Moovy - موسوعة الأفلام والمسلسلات"
       }
     ],
 
