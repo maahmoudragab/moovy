@@ -82,7 +82,7 @@ export const metadata: Metadata = {
     },
   },
 
-
+  applicationName: "Moovy",
   openGraph: {
     title: "Moovy - موسوعة الأفلام والمسلسلات بالعربي",
 
@@ -91,7 +91,6 @@ export const metadata: Metadata = {
     url: "https://moovy-hub.vercel.app",
 
     siteName: "Moovy",
-    applicationName: "Moovy",
 
     images: [
       {
