@@ -108,6 +108,10 @@ export const metadata: Metadata = {
     type: "website",
   },
 
+  icons: {
+    icon: "/images/moovy.png"
+  },
+
   twitter: {
     card: "summary_large_image",
 
