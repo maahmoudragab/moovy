@@ -41,7 +41,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     fetchAnimeSeries()
   ]);
 
-  // نجمع كل النتائج في مصفوفة واحدة
+  // جمع الكل في مصفوفة واحدة
   const allItems = [
     ...arabicMovies,
     ...popularMovies,
@@ -55,15 +55,37 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...animeSeries
   ];
 
-  // نحولهم للينكات
-  const urls: MetadataRoute.Sitemap = allItems.map((item: any) => ({
-    url: `${baseUrl}/${item.media_type || (item.title ? "movie" : "series")}/${item.id}`,
-    lastModified: new Date().toISOString(),
-    changeFrequency: "weekly",
-    priority: 0.8
-  }));
+  // إزالة التكرارات بناءً على الـ ID + النوع
+  const uniqueItems = Array.from(
+    new Map(allItems.map(item => [`${item.id}-${item.type || item.media_type}`, item])).values()
+  );
 
-  // نضيف الصفحة الرئيسية والفكسد لينكات
+  // تحويل الداتا لروابط
+  const urls: MetadataRoute.Sitemap = uniqueItems.map((item: any) => {
+    // تحديد النوع بالإنجليزي
+    const type =
+      item.type === "فيلم"
+        ? "movie"
+        : item.type === "مسلسل"
+        ? "series"
+        : item.media_type || (item.title ? "movie" : "series");
+
+    // تحديد آخر تعديل
+    const lastModified =
+      item.updated_at ||
+      item.release_date ||
+      item.first_air_date ||
+      new Date().toISOString();
+
+    return {
+      url: `${baseUrl}/${type}/${item.id}`,
+      lastModified: new Date(lastModified).toISOString(),
+      changeFrequency: "weekly",
+      priority: 0.8
+    };
+  });
+
+  // إضافة الصفحة الرئيسية
   urls.push({
     url: baseUrl,
     lastModified: new Date().toISOString(),
