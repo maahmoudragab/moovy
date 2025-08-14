@@ -78,7 +78,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       new Date().toISOString();
 
     return {
-      url: `${baseUrl}/${type}/${item.id}`,
+      url: `${baseUrl}/details/${type}/${item.id}`,
       lastModified: new Date(lastModified).toISOString(),
       changeFrequency: "weekly",
       priority: 0.8
