@@ -140,136 +140,136 @@ export default function ProfilePage() {
   return (
     <>
       <Navbar />
-<ScrollSmoothWrapper>
-  <div className="min-h-screen flex flex-col relative z-0">
+      <ScrollSmoothWrapper>
+        <div className="min-h-screen flex flex-col relative z-0">
 
-    {/* الخلفية */}
-    <div className="absolute inset-0 -z-10">
-      <Image
-        src={profile.avatar}
-        alt="صورة المستخدم"
-        fill
-        sizes="(max-width: 768px) 100vw, 200px"
-        priority
-        className="object-cover saturate-200"
-      />
-      <div
-        className="absolute inset-0 bg-black/40"
-        style={{ backdropFilter: "blur(200px)" }}
-      />
-    </div>
-
-    {/* المحتوى */}
-    <main className="flex-1 pt-16 md:pt-28 px-4 md:px-8 relative z-10">
-      <div
-        className={`w-full fixed bottom-17 md:bottom-7 right-1/2 translate-x-1/2 z-45 transition-all duration-500
-        ${showAlert
-            ? "opacity-100 translate-y-0"
-            : "opacity-0 translate-y-5 pointer-events-none"
-          }`}
-      >
-        <Alert
-          variant="default"
-          className="w-fit mx-auto shadow-lg overflow-hidden flex items-center gap-2"
-        >
-          <CheckCircle />
-          <AlertTitle className="text-foreground w-full">
-            تم إرسال رابط التفعيل إلى إيميلك
-          </AlertTitle>
-        </Alert>
-      </div>
-
-      <div className="flex flex-col md:flex-row gap-6 pb-8 items-center md:items-stretch">
-        <div className="relative w-[300px] h-[300px] md:w-[400px] md:h-[400px] shrink-0 overflow-hidden rounded-xl shadow-lg border-2 border-white/20">
-          <Image
-            src={profile.avatar || "/images/default-avatar.png"}
-            alt="صورة المستخدم"
-            fill
-            className="object-cover"
-          />
-        </div>
-
-        <div className="w-full flex flex-col justify-between text-white self-stretch">
-          <Title>بيانات الحساب</Title>
-
-          <div className="flex gap-2">
-            <Button
-              onClick={() => setEditOpen(true)}
-              className="flex-1 rounded-xl"
-            >
-              تعديل بياناتي
-            </Button>
-            <Button
-              onClick={() => setLogoutConfirmOpen(true)}
-              variant="default"
-              className="flex-1 rounded-xl bg-red-500 hover:bg-red-500/50 text-white"
-            >
-              تسجيل خروج
-            </Button>
+          {/* الخلفية */}
+          <div className="absolute inset-0 -z-10">
+            <Image
+              src={profile.avatar}
+              alt="صورة المستخدم"
+              fill
+              sizes="(max-width: 768px) 100vw, 200px"
+              priority
+              className="object-cover saturate-200"
+            />
+            <div
+              className="absolute inset-0 bg-black/40"
+              style={{ backdropFilter: "blur(200px)" }}
+            />
           </div>
 
-          <ul className="flex flex-col gap-2 text-base mt-4">
-            <InfoRow label="الاسم" value={profile.name} />
-            <InfoRow label="البريد الإلكتروني" value={profile.email} />
-            <InfoRow label="تاريخ الميلاد" value={profile.birthdate} />
-            <InfoRow label="مزود الدخول" value={profile.provider} />
-            <InfoRow
-              label="تأكيد الإيميل"
-              value={
-                isEmailVerified ? (
-                  <span className="text-green-400 flex items-center gap-1">
-                    مؤكد <CheckCircle size={16} />
-                  </span>
-                ) : (
-                  <div className="flex items-center gap-2 ">
-                    <span className="text-red-400">غير مؤكد</span>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={handleSendVerification}
-                      disabled={isSending || timer > 0}
-                    >
-                      {timer > 0
-                        ? `إعادة الإرسال خلال ${timer}ث`
-                        : "تفعيل الإيميل"}
-                    </Button>
-                  </div>
-                )
-              }
-            />
-            <InfoRow
-              label="تاريخ إنشاء الحساب"
-              value={new Date(profile.createdAt).toLocaleDateString("ar-EG", {
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-              })}
-            />
-          </ul>
+          {/* المحتوى */}
+          <main className="flex-1 pt-16 md:pt-28 px-4 md:px-8 relative z-10">
+            <div
+              className={`w-full fixed bottom-17 md:bottom-7 right-1/2 translate-x-1/2 z-45 transition-all duration-500
+        ${showAlert
+                  ? "opacity-100 translate-y-0"
+                  : "opacity-0 translate-y-5 pointer-events-none"
+                }`}
+            >
+              <Alert
+                variant="default"
+                className="w-fit mx-auto shadow-lg overflow-hidden flex items-center gap-2"
+              >
+                <CheckCircle />
+                <AlertTitle className="text-foreground w-full">
+                  تم إرسال رابط التفعيل إلى إيميلك
+                </AlertTitle>
+              </Alert>
+            </div>
+
+            <div className="flex flex-col md:flex-row gap-6 pb-8 items-center md:items-stretch">
+              <div className="relative w-[300px] h-[300px] md:w-[400px] md:h-[400px] shrink-0 overflow-hidden rounded-xl shadow-lg border-2 border-white/20">
+                <Image
+                  src={profile.avatar || "/images/default-avatar.png"}
+                  alt="صورة المستخدم"
+                  fill
+                  className="object-cover"
+                />
+              </div>
+
+              <div className="w-full flex flex-col justify-between text-white self-stretch">
+                <Title>بيانات الحساب</Title>
+
+                <div className="flex gap-2">
+                  <Button
+                    onClick={() => setEditOpen(true)}
+                    className="flex-1 rounded-xl"
+                  >
+                    تعديل بياناتي
+                  </Button>
+                  <Button
+                    onClick={() => setLogoutConfirmOpen(true)}
+                    variant="default"
+                    className="flex-1 rounded-xl bg-red-500 hover:bg-red-500/50 text-white"
+                  >
+                    تسجيل خروج
+                  </Button>
+                </div>
+
+                <ul className="flex flex-col gap-2 text-base mt-4">
+                  <InfoRow label="الاسم" value={profile.name} />
+                  <InfoRow label="البريد الإلكتروني" value={profile.email} />
+                  <InfoRow label="تاريخ الميلاد" value={profile.birthdate} />
+                  <InfoRow label="مزود الدخول" value={profile.provider} />
+                  <InfoRow
+                    label="تأكيد الإيميل"
+                    value={
+                      isEmailVerified ? (
+                        <span className="text-green-400 flex items-center gap-1">
+                          مؤكد <CheckCircle size={16} />
+                        </span>
+                      ) : (
+                        <div className="flex items-center gap-2 ">
+                          <span className="text-red-400">غير مؤكد</span>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={handleSendVerification}
+                            disabled={isSending || timer > 0}
+                          >
+                            {timer > 0
+                              ? `إعادة الإرسال خلال ${timer}ث`
+                              : "تفعيل الإيميل"}
+                          </Button>
+                        </div>
+                      )
+                    }
+                  />
+                  <InfoRow
+                    label="تاريخ إنشاء الحساب"
+                    value={new Date(profile.createdAt).toLocaleDateString("ar-EG", {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                    })}
+                  />
+                </ul>
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-3 md:gap-5">
+              {profile.recent_views && profile.recent_views.length >= 1 && (
+                <SectionSlider
+                  title="السجل"
+                  data={[...profile.recent_views].reverse()}
+                />
+              )}
+
+              {profile.favorites && profile.favorites.length >= 1 && (
+                <SectionSlider title="قائمة المفضلة" data={profile.favorites} />
+              )}
+              {favGenersData && (
+                <SectionSlider title="الأقتراحات" data={favGenersData} />
+              )}
+            </div>
+          </main>
+
+          {/* الفوتر */}
+          <Footer />
         </div>
-      </div>
-
-      <div className="flex flex-col gap-3 md:gap-5">
-        {profile.recent_views && profile.recent_views.length >= 1 && (
-          <SectionSlider
-            title="السجل"
-            data={[...profile.recent_views].reverse()}
-          />
-        )}
-
-        {profile.favorites && profile.favorites.length >= 1 && (
-          <SectionSlider title="قائمة المفضلة" data={profile.favorites} />
-        )}
-        {favGenersData && (
-          <SectionSlider title="الأقتراحات" data={favGenersData} />
-        )}
-      </div>
-    </main>
-
-    {/* الفوتر */}
-    <Footer />
-  </div>
-</ScrollSmoothWrapper>
+      </ScrollSmoothWrapper>
 
 
       <Dialog open={editOpen} onOpenChange={setEditOpen}>
