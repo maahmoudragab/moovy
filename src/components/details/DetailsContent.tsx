@@ -13,7 +13,6 @@ import SeasonsSection from "@/components/details/SeasonsSection";
 import MediaSection from "@/components/details/MediaSection";
 import ReviewsSection from "@/components/details/ReviewsSection";
 import RecommendationSection from "@/components/details/RecommendationSection";
-import ScrollSmoothWrapper from "@/components/ScrollSmoothWrapper";
 
 // Icons
 import { CheckCircle, XCircle } from "lucide-react";
@@ -147,46 +146,42 @@ export default function DetailsContent({ item }: { item: FullDetailsType }) {
   };
 
   return (
-    <ScrollSmoothWrapper>
-      <div className="min-h-screen flex flex-col relative z-0">
+    <div className="min-h-screen flex flex-col relative z-0">
 
-        <div className="absolute inset-0 -z-10">
-          {(media.images?.[0]?.file_path || main.backdrop_blur_path) && (
-            <Image
-              src={`https://image.tmdb.org/t/p/w500${media.images?.[0]?.file_path || main.backdrop_blur_path
-                }`}
-              alt={main.name || main.title || "صورة"}
-              fill
-              sizes="100vw"
-              priority
-              className="object-cover saturate-400"
-            />
-          )}
-          <div className="absolute inset-0 bg-black/60 backdrop-blur-3xl" />
-        </div>
-
-        <main className="flex-1 w-full relative z-10">
-          {/* Info and favorite button */}
-          <InfoSection
-            main={main}
-            isLoading={isLoading}
-            isFavorite={isFavorite}
-            toggleFavorite={toggleFavorite}
+      <div className="absolute inset-0 -z-10">
+        {(media.images?.[0]?.file_path || main.backdrop_blur_path) && (
+          <Image
+            src={`https://image.tmdb.org/t/p/w500${media.images?.[0]?.file_path || main.backdrop_blur_path
+              }`}
+            alt={main.name || main.title || "صورة"}
+            fill
+            sizes="100vw"
+            priority
+            className="object-cover saturate-400"
           />
-
-          {/* Other sections below */}
-          <div className="mx-4 md:mx-8 flex flex-col gap-3 md:gap-5">
-            <CastSection cast={media.cast} />
-            <SeasonsSection seasons={main.seasons} />
-            <MediaSection images={media.images} videos={media.videos} isMobile={isMobile} />
-            <ReviewsSection reviews={reviews} isMobile={isMobile} />
-            <RecommendationSection recommendation={recommendation} />
-          </div>
-        </main>
-
-        <Footer />
+        )}
+        <div className="absolute inset-0 bg-black/60 backdrop-blur-3xl" />
       </div>
-    </ScrollSmoothWrapper>
 
+      <main className="flex-1 w-full relative z-10">
+        {/* Info and favorite button */}
+        <InfoSection
+          main={main}
+          isLoading={isLoading}
+          isFavorite={isFavorite}
+          toggleFavorite={toggleFavorite}
+        />
+
+        {/* Other sections below */}
+        <div className="mx-4 md:mx-8 flex flex-col gap-3 md:gap-5">
+          <CastSection cast={media.cast} />
+          <SeasonsSection seasons={main.seasons} />
+          <MediaSection images={media.images} videos={media.videos} isMobile={isMobile} />
+          <ReviewsSection reviews={reviews} isMobile={isMobile} />
+          <RecommendationSection recommendation={recommendation} />
+        </div>
+      </main>
+      <Footer />
+    </div>
   );
 }

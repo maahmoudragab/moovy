@@ -18,7 +18,6 @@ import {
 } from "@/firebase/authActions";
 
 // Components
-import Navbar from "@/components/shared/navbar";
 import Title from "@/components/ui/title";
 import SectionSlider from "@/components/shared/sectionSlider";
 import Loading from "@/app/loading";
@@ -30,10 +29,7 @@ import { Alert, AlertTitle } from "@/components/ui/alert";
 // Single Requests
 import FetchByGenres from "@/data/single_requests/fetch_geners";
 import { MediaItem } from "@/data/HandleRequests";
-
-import ScrollSmoothWrapper from "@/components/ScrollSmoothWrapper";
 import Footer from "@/components/shared/footer";
-
 
 export default function ProfilePage() {
   const router = useRouter();
@@ -139,8 +135,6 @@ export default function ProfilePage() {
 
   return (
     <>
-      <Navbar />
-      <ScrollSmoothWrapper>
         <div className="min-h-screen flex flex-col relative z-0">
 
           {/* الخلفية */}
@@ -265,12 +259,8 @@ export default function ProfilePage() {
               )}
             </div>
           </main>
-
-          {/* الفوتر */}
           <Footer />
         </div>
-      </ScrollSmoothWrapper>
-
 
       <Dialog open={editOpen} onOpenChange={setEditOpen}>
         <DialogContent className="bg-[#1a1a1a] w-[95%] max-w-md rounded-2xl px-4 md:px-8 py-8 shadow-2xl border border-white/10">

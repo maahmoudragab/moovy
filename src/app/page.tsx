@@ -1,6 +1,5 @@
 
 // Components
-import Navbar from "@/components/shared/navbar";
 import HeroSection from "@/components/heroSection";
 import SectionSlider from "@/components/shared/sectionSlider";
 import Footer from "@/components/shared/footer";
@@ -23,8 +22,6 @@ import FetchPopularTurkishSeries from "@/data/series/fetch_turkish_series";
 import FetchAnimeSeries from "@/data/series/fetch_anime_series";
 import FetchKrSeries from "@/data/series/fetch_kr_series";
 
-import ScrollSmoothWrapper from "@/components/ScrollSmoothWrapper";
-
 export default async function Home() {
   const [hero_data, popular_movies, arabic_movies, turkish_movies, anime_movies, kr_movie,
     popular_series, arabic_series, turkish_series, anime_series, kr_series, upcoming,]
@@ -33,35 +30,31 @@ export default async function Home() {
 
   return (
     <main className="flex flex-col gap-5 md:gap-2">
-      <Navbar />
-      <ScrollSmoothWrapper>
-        <HeroSection data={hero_data} />
-        <div className="mx-4 md:mx-8 flex flex-col gap-3 md:gap-5">
-          <SectionSlider path="popular_movies" title="الأفلام الرائجة" data={popular_movies} />
+      <HeroSection data={hero_data} />
+      <div className="mx-4 md:mx-8 flex flex-col gap-3 md:gap-5">
+        <SectionSlider path="popular_movies" title="الأفلام الرائجة" data={popular_movies} />
 
-          <SectionSlider path="popular_series" title="المسلسلات الرائجة" data={popular_series} />
+        <SectionSlider path="popular_series" title="المسلسلات الرائجة" data={popular_series} />
 
-          <SectionSlider path="arabic_movies" title="أفلام عربية" data={arabic_movies} />
+        <SectionSlider path="arabic_movies" title="أفلام عربية" data={arabic_movies} />
 
-          <SectionSlider path="arabic_series" title="مسلسلات عربية" data={arabic_series} />
+        <SectionSlider path="arabic_series" title="مسلسلات عربية" data={arabic_series} />
 
-          <SectionSlider path="turkish_movies" title="أفلام تركية" data={turkish_movies} />
+        <SectionSlider path="turkish_movies" title="أفلام تركية" data={turkish_movies} />
 
-          <SectionSlider path="turkish_series" title="مسلسلات تركية" data={turkish_series} />
+        <SectionSlider path="turkish_series" title="مسلسلات تركية" data={turkish_series} />
 
-          <SectionSlider path="anime_movies" title="أفلام أنمي" data={anime_movies} />
+        <SectionSlider path="anime_movies" title="أفلام أنمي" data={anime_movies} />
 
-          <SectionSlider path="anime_series" title="مسلسلات أنمي" data={anime_series} />
+        <SectionSlider path="anime_series" title="مسلسلات أنمي" data={anime_series} />
 
-          <SectionSlider path="kr_movies" title="أفلام كورية" data={kr_movie} />
+        <SectionSlider path="kr_movies" title="أفلام كورية" data={kr_movie} />
 
-          <SectionSlider path="kr_series" title="مسلسلات كورية" data={kr_series} />
+        <SectionSlider path="kr_series" title="مسلسلات كورية" data={kr_series} />
 
-          <SectionSlider title="الأعمال القادمة" data={upcoming} />
-        </div>
-        <Footer />
-
-      </ScrollSmoothWrapper>
+        <SectionSlider title="الأعمال القادمة" data={upcoming} />
+      </div>
+      <Footer />
     </main>
   );
 }

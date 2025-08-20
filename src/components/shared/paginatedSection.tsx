@@ -39,7 +39,7 @@ export default function PaginatedSection({ title, totalPages, currentPage, setCu
   }, [currentPage])
 
   return (
-    <section data-lag=".5" className="px-2 md:px-4 py-2 bg-[#ffffff1a] border border-white/10 rounded-xl">
+    <section suppressHydrationWarning data-lag=".5" className="px-2 md:px-4 py-2 bg-[#ffffff1a] border border-white/10 rounded-xl">
       {/* Desktop: Title + Controls */}
       <div className="mb-4 hidden md:flex items-center justify-between ">
         <Title>{title}</Title>

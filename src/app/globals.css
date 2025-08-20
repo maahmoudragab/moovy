@@ -151,3 +151,6 @@ img{
     left: calc(100% - 3rem);
   }
 }
+
+::-webkit-scrollbar { width: 7px; }
+::-webkit-scrollbar-thumb { background: var(--primary); }

@@ -4,6 +4,7 @@ import { Alexandria } from "next/font/google";
 
 // Global Styles
 import "./globals.css";
+import ScrollSmoothWrapper from "@/components/ScrollSmoothWrapper";
 
 
 const alexandria = Alexandria({
@@ -209,11 +210,17 @@ export const metadata: Metadata = {
 };
 
 
-export default function RootLayout({ children, }: Readonly<{ children: React.ReactNode; }>) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html lang="ar" dir="rtl" className="dark">
-      <body className={`${alexandria.className} antialiased overflow-x-hidden`} >
-        {children}
+      <body className={`${alexandria.className} antialiased overflow-x-hidden`}>
+        <ScrollSmoothWrapper>
+          {children}
+        </ScrollSmoothWrapper>
       </body>
     </html>
   );

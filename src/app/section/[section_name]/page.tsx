@@ -3,10 +3,8 @@ import Head from "next/head";
 import { notFound } from "next/navigation";
 
 // UI Components
-import Navbar from "@/components/shared/navbar";
 import SectionList from "@/components/shared/sectionList";
 import Title from "@/components/ui/title";
-import ScrollSmoothWrapper from "@/components/ScrollSmoothWrapper";
 import Footer from "@/components/shared/footer";
 
 const validTypes = [
@@ -74,8 +72,6 @@ export default async function SectionPage({ params }: { params: Promise<{ sectio
         <meta name="google-site-verification" content="HJcQ06N13ZmafDcTz4ph34ghIvb37tCX9mqz9-zUcEk" />
       </Head>
 
-      <Navbar />
-      <ScrollSmoothWrapper>
         <div className="min-h-screen flex flex-col">
           <main className="flex-1 pt-16 md:pt-24 mx-4 md:mx-8 flex flex-col gap-3 md:gap-5">
             <div className="px-2 md:px-4 py-2 md:py-4 bg-[#ffffff1a] border-1 rounded-xl">
@@ -85,7 +81,6 @@ export default async function SectionPage({ params }: { params: Promise<{ sectio
           </main>
           <Footer />
         </div>
-      </ScrollSmoothWrapper>
     </>
   );
 }

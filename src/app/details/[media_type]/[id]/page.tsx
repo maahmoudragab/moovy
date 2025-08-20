@@ -6,7 +6,6 @@ import FetchDetails from "@/data/single_requests/fetch_details";
 
 // App Components
 import DetailsContent from "@/components/details/DetailsContent";
-import Navbar from "@/components/shared/navbar";
 import ToastComponent from "@/components/shared/ToastComponent";
 import Head from "next/head";
 
@@ -195,10 +194,8 @@ export default async function MediaDetailsPage({ params }: { params: Promise<{ i
         />
       </Head>
 
-      <Navbar />
       <ToastComponent />
-      <DetailsContent item={data!} />;
-
+      <DetailsContent item={data!} />
     </>
   )
 }

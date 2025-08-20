@@ -55,7 +55,7 @@ export default function SectionSlider({ title, data, path }: MoviesSliderProps) 
   }, [emblaApi]);
 
   return (
-    <section data-lag=".5" className="px-2 md:px-4 py-2 md:py-4 bg-[#ffffff1a] border-1 rounded-xl">
+    <section suppressHydrationWarning data-lag=".5" className="px-2 md:px-4 py-2 md:py-4 bg-[#ffffff1a] border-1 rounded-xl">
       <div className="flex justify-between items-center mb-4">
         <Title>{title}</Title>
         {path && (

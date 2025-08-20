@@ -2,9 +2,8 @@ import Head from "next/head";
 import FetchArtist from "@/data/single_requests/fetch_artist";
 import Artist from "@/components/artist";
 import Image from "next/image";
-import Navbar from "@/components/shared/navbar";
-import ScrollSmoothWrapper from "@/components/ScrollSmoothWrapper";
 import Footer from "@/components/shared/footer";
+
 
 export default async function ArtistPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -45,8 +44,6 @@ export default async function ArtistPage({ params }: { params: Promise<{ id: str
         />
       </Head>
 
-      <Navbar />
-      <ScrollSmoothWrapper>
         <div className="min-h-screen flex flex-col relative z-0">
           <div className="absolute inset-0 -z-10">
             <Image
@@ -63,10 +60,8 @@ export default async function ArtistPage({ params }: { params: Promise<{ id: str
           <main className="flex-1 w-full pt-16 md:pt-28 px-4 md:px-8 relative z-10">
             <Artist data={data} />
           </main>
-
           <Footer />
         </div>
-      </ScrollSmoothWrapper>
     </>
   );
 }

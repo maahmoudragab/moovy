@@ -178,7 +178,7 @@ export default function Navbar({ queryS }: { queryS?: string }) {
       {/* Desktop Navbar */}
       <header
         onClick={(e) => e.stopPropagation()}
-        className="fixed top-3 left-1/2 -translate-x-1/2 z-50 hidden md:flex w-[95%] max-w-7xl h-15 px-6 justify-between items-center rounded-full border-2 backdrop-blur-xl bg-white/10 shadow-md"
+        className=" fixed top-3 left-1/2 -translate-x-1/2 z-50 hidden md:flex w-[95%] max-w-7xl h-15 px-6 justify-between items-center rounded-full border-2 backdrop-blur-xl bg-white/10 shadow-md"
       >
         <div className="flex items-center gap-2">
           {renderAuthSection(false)}
