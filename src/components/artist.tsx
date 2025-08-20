@@ -1,19 +1,16 @@
 "use client";
 import Image from "next/image";
-import Navbar from "@/components/shared/navbar";
 import SectionSlider from "@/components/shared/sectionSlider";
 import { ArtistFullInfo } from "@/data/single_requests/fetch_artist";
 import Link from "next/link";
 import { Calendar, User, Globe, CalendarClock, MapPin } from "lucide-react";
-import { Button } from "./ui/button";
+import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { InfoRow } from "./details/InfoHeader";
+import { InfoRow } from "@/components/details/InfoHeader";
 import { useRef, useEffect } from "react";
 import gsap from "gsap";
 import { SplitText } from "gsap/SplitText";
-import ScrollSmoothWrapper from "@/components/ScrollSmoothWrapper";
-import Head from "next/head";
-import Footer from "./shared/footer";
+
 
 gsap.registerPlugin(SplitText);
 

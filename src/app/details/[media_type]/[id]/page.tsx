@@ -6,7 +6,6 @@ import FetchDetails from "@/data/single_requests/fetch_details";
 
 // App Components
 import DetailsContent from "@/components/details/DetailsContent";
-import ToastComponent from "@/components/shared/ToastComponent";
 import Head from "next/head";
 
 export default async function MediaDetailsPage({ params }: { params: Promise<{ id: string; media_type: string }> }) {
@@ -194,7 +193,6 @@ export default async function MediaDetailsPage({ params }: { params: Promise<{ i
         />
       </Head>
 
-      <ToastComponent />
       <DetailsContent item={data!} />
     </>
   )

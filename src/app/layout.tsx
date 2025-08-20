@@ -216,7 +216,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="ar" dir="rtl" className="dark">
+    <html lang="ar" dir="rtl" className="dark" >
       <body className={`${alexandria.className} antialiased overflow-x-hidden`}>
         <ScrollSmoothWrapper>
           {children}

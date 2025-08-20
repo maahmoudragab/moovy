@@ -54,7 +54,7 @@ export default function CastSection({ cast }: { cast: FullDetailsType["media"]["
   }, [emblaApi]);
 
   return (
-    <section suppressHydrationWarning data-lag=".5" className="overflow-hidden md:mask-l-from-95%" ref={emblaRefCast}>
+    <section  className="overflow-hidden md:mask-l-from-95%" ref={emblaRefCast}>
       <div className="flex gap-2 md:gap-3 items-stretch" ref={containerRef}>
         {cast
           .filter((a) => a.profile_path)

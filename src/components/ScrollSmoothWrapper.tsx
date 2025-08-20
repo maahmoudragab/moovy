@@ -4,7 +4,8 @@ import { useEffect, ReactNode } from "react";
 import { gsap } from "gsap";
 import { ScrollSmoother } from "gsap/ScrollSmoother";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import Navbar from "./shared/navbar";
+import Navbar from "@/components/shared/navbar";
+import ToastComponent from "@/components/shared/ToastComponent";
 
 gsap.registerPlugin(ScrollSmoother, ScrollTrigger);
 
@@ -22,10 +23,10 @@ export default function ScrollSmoothWrapper({ children }: { children: ReactNode 
   }, []);
 
   return (
-    <div id="smooth-wrapper" suppressHydrationWarning>
+    <div id="smooth-wrapper" >
       <Navbar></Navbar>
-
-      <div id="smooth-content">
+      <ToastComponent />
+      <div id="smooth-content" >
         {children}
       </div>
     </div>
